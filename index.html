@@ -1,0 +1,1636 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Baccarat Lab</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f3efe4;
+        --surface: #fffdf6;
+        --surface2: #ece5d3;
+        --ink: #1d2620;
+        --ink-soft: #4c5a50;
+        --felt: #0d5c3f;
+        --felt-deep: #083d29;
+        --felt-panel: #0a4a32;
+        --gold: #b8860b;
+        --gold-bright: #c9a227;
+        --line: #d8cfb6;
+        --red: #b03030;
+        --blue: #2456a6;
+        --tie: #2e8b57;
+        --chip: #ffffff;
+        --shadow: 0 2px 10px rgba(30, 40, 30, .10);
+        --btn-ink: #ffffff;
+        --warn-bg: #fdf3d7;
+        --warn-line: #d9b84a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d130f;
+          --surface: #16211a;
+          --surface2: #1d2c22;
+          --ink: #ece7d7;
+          --ink-soft: #a9b8ab;
+          --felt: #127a52;
+          --felt-deep: #07271a;
+          --felt-panel: #0a3524;
+          --gold: #d4af37;
+          --gold-bright: #e3c65a;
+          --line: #33453a;
+          --red: #e0685f;
+          --blue: #7aa2e8;
+          --tie: #4cc38a;
+          --chip: #1d2c22;
+          --shadow: 0 2px 10px rgba(0, 0, 0, .45);
+          --warn-bg: #2e2a16;
+          --warn-line: #8a7422;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+        line-height: 1.55;
+      }
+      h1, h2, h3, .serif { font-family: Palatino, "Palatino Linotype", Georgia, "Songti TC", serif; }
+      a { color: var(--felt); }
+      @media (prefers-color-scheme: dark) { a { color: var(--gold-bright); } }
+
+      /* ---------- header ---------- */
+      header.site {
+        position: sticky; top: 0; z-index: 50;
+        background: linear-gradient(180deg, var(--felt-deep), var(--felt-panel));
+        color: #f5efdb;
+        border-bottom: 3px solid var(--gold-bright);
+        box-shadow: var(--shadow);
+      }
+      .header-in {
+        max-width: 1120px; margin: 0 auto; padding: 10px 16px 0;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+      }
+      .brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+      .brand .name { font-family: Palatino, Georgia, serif; font-size: 24px; font-weight: 700; letter-spacing: .5px; color: #fff8e1; white-space: nowrap; }
+      @media (max-width: 560px) {
+        .brand .name { font-size: 20px; }
+        .brand .tag { display: none; }
+      }
+      .brand .name .lab { color: var(--gold-bright); }
+      .brand .tag { font-size: 12px; color: #cfe3d2; }
+      .lang-switch {
+        display: flex; border: 1px solid var(--gold-bright); border-radius: 999px; overflow: hidden;
+      }
+      .lang-switch button {
+        background: transparent; color: #f5efdb; border: 0; padding: 6px 14px;
+        font-size: 13px; font-weight: 600; cursor: pointer;
+      }
+      .lang-switch button.on { background: var(--gold-bright); color: #231a00; }
+      nav.main {
+        max-width: 1120px; margin: 0 auto; padding: 8px 16px 10px;
+        display: flex; flex-wrap: wrap; gap: 6px;
+      }
+      nav.main button {
+        background: rgba(255,255,255,.08); color: #eef3e4; border: 1px solid rgba(255,255,255,.18);
+        padding: 7px 14px; border-radius: 999px; font-size: 14px; cursor: pointer;
+      }
+      nav.main button.on { background: var(--gold-bright); color: #231a00; border-color: var(--gold-bright); font-weight: 700; }
+
+      main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 40px; }
+      .page { display: none; }
+      .page.on { display: block; }
+
+      /* ---------- hero / home ---------- */
+      .hero {
+        background:
+          radial-gradient(ellipse at 50% -30%, rgba(255, 215, 120, .25), transparent 60%),
+          linear-gradient(160deg, var(--felt) 0%, var(--felt-deep) 100%);
+        color: #f7f2df; border-radius: 18px; padding: 34px 28px 30px;
+        border: 1px solid var(--gold-bright);
+        box-shadow: var(--shadow);
+      }
+      .hero h1 { margin: 0 0 6px; font-size: clamp(28px, 5vw, 42px); color: #fff8e1; }
+      .hero h1 .lab { color: var(--gold-bright); }
+      .hero .sub { font-size: clamp(15px, 2.6vw, 19px); color: #dcead9; margin: 0 0 14px; }
+      .hero p { max-width: 68ch; margin: 0 0 10px; color: #eef3e4; }
+      .edge-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+      .edge-strip .chipstat {
+        background: rgba(0,0,0,.28); border: 1px solid rgba(255,215,120,.55);
+        border-radius: 10px; padding: 8px 14px; font-size: 14px;
+      }
+      .edge-strip b { color: var(--gold-bright); font-size: 17px; }
+      .honest {
+        margin-top: 18px; background: var(--warn-bg); border: 1px solid var(--warn-line);
+        color: var(--ink); border-radius: 12px; padding: 14px 16px; font-size: 15px;
+      }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 20px; }
+      .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px;
+      }
+      .card h3 { margin: 0; font-size: 20px; }
+      .card p { margin: 0; color: var(--ink-soft); font-size: 15px; flex: 1; }
+      .card button, .btn {
+        background: var(--felt); color: var(--btn-ink); border: 0; border-radius: 9px;
+        padding: 10px 16px; font-size: 15px; font-weight: 600; cursor: pointer;
+      }
+      .card button:hover, .btn:hover { filter: brightness(1.1); }
+      .btn.gold { background: var(--gold-bright); color: #231a00; }
+      .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+      .btn:disabled { opacity: .45; cursor: not-allowed; }
+      .section-title { font-size: 26px; margin: 4px 0 4px; }
+      .section-lede { color: var(--ink-soft); margin: 0 0 16px; max-width: 75ch; }
+
+      /* ---------- tabs ---------- */
+      .tabbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; }
+      .tabbar button {
+        background: var(--surface2); color: var(--ink); border: 1px solid var(--line);
+        padding: 8px 13px; border-radius: 999px; font-size: 14px; cursor: pointer;
+      }
+      .tabbar button.on { background: var(--felt); color: #fff; border-color: var(--felt); font-weight: 700; }
+      .tabpanel {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 22px; margin-top: 12px; box-shadow: var(--shadow);
+      }
+      .tabpanel h3 { margin: 0 0 8px; font-size: 22px; }
+      .tabpanel h4 { margin: 18px 0 6px; font-size: 17px; }
+      .tabpanel p { margin: 0 0 10px; max-width: 78ch; }
+      .tabpanel ul, .tabpanel ol { margin: 0 0 12px; padding-left: 22px; max-width: 78ch; }
+      .tabpanel li { margin-bottom: 5px; }
+      .kicker { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+      .verdict {
+        border: 1px solid var(--warn-line); background: var(--warn-bg);
+        border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 15px;
+      }
+      .verdict b.tag { color: var(--gold); }
+      table.data { border-collapse: collapse; margin: 10px 0 16px; font-size: 14.5px; }
+      table.data th, table.data td { border: 1px solid var(--line); padding: 6px 11px; text-align: left; }
+      table.data th { background: var(--surface2); }
+      table.data td.num, table.data th.num { text-align: right; }
+      .plus { color: var(--tie); font-weight: 700; }
+      .minus { color: var(--red); font-weight: 700; }
+      .statgrid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+      .statgrid .sg { background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 13px; font-size: 14px; }
+      .statgrid .sg b { font-size: 16px; }
+      .sources { font-size: 14px; color: var(--ink-soft); }
+      .sources li { margin-bottom: 4px; word-break: break-all; }
+
+      /* ---------- simulator ---------- */
+      .sim-grid { display: grid; grid-template-columns: 320px 1fr; gap: 14px; align-items: start; }
+      @media (max-width: 860px) { .sim-grid { grid-template-columns: 1fr; } }
+      .panel {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px;
+      }
+      .panel h3 { margin: 0 0 10px; font-size: 18px; }
+      .field { margin-bottom: 11px; }
+      .field label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px; }
+      .field select, .field input[type="number"], .field input[type="text"] {
+        width: 100%; padding: 8px 10px; font-size: 15px; border-radius: 8px;
+        border: 1px solid var(--line); background: var(--chip); color: var(--ink);
+      }
+      .btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+      .btnrow .btn { flex: 1 1 auto; }
+      .hand-display { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .hand-box { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--surface2); }
+      .hand-box.banker { border-top: 4px solid var(--red); }
+      .hand-box.player { border-top: 4px solid var(--blue); }
+      .hand-box h4 { margin: 0 0 6px; font-size: 15px; }
+      .hand-box .total { font-size: 22px; font-weight: 700; }
+      .pcards { display: flex; flex-wrap: wrap; gap: 5px; min-height: 40px; margin-bottom: 6px; }
+      .pcard {
+        background: var(--chip); border: 1px solid var(--line); border-radius: 6px;
+        padding: 5px 7px; font-size: 15px; font-weight: 700; min-width: 34px; text-align: center;
+        box-shadow: 0 1px 2px rgba(0,0,0,.12);
+      }
+      .pcard.redsuit { color: #c22f2f; }
+      @media (prefers-color-scheme: dark) { .pcard.redsuit { color: #ff8a7a; } }
+      .result-banner {
+        border-radius: 10px; padding: 9px 13px; font-weight: 700; font-size: 16px; margin-top: 10px;
+        background: var(--surface2); border: 1px solid var(--line);
+      }
+      .result-banner.B { background: rgba(176,48,48,.14); border-color: var(--red); }
+      .result-banner.P { background: rgba(36,86,166,.14); border-color: var(--blue); }
+      .result-banner.T { background: rgba(46,139,87,.15); border-color: var(--tie); }
+      .stats-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+      .stats-table td { padding: 4px 2px; border-bottom: 1px dashed var(--line); }
+      .stats-table td.v { text-align: right; font-weight: 700; }
+      canvas.chart { width: 100%; height: 190px; display: block; }
+      .roads { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 700px) { .roads { grid-template-columns: 1fr; } }
+      .road-box { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--surface); }
+      .road-box h4 { margin: 0 0 8px; font-size: 14px; color: var(--ink-soft); }
+      .road-scroll { overflow-x: auto; padding-bottom: 4px; }
+      .road-grid { display: grid; gap: 2px; }
+      .cell { width: 17px; height: 17px; border-radius: 50%; position: relative; flex: none; }
+      .cell.b { border: 2px solid var(--red); }
+      .cell.p { border: 2px solid var(--blue); }
+      .cell.bead-b { background: var(--red); border: 2px solid var(--red); }
+      .cell.bead-p { background: var(--blue); border: 2px solid var(--blue); }
+      .cell.bead-t { background: var(--tie); border: 2px solid var(--tie); }
+      .cell.mark-r { border: 2px solid var(--red); background: rgba(176,48,48,.35); }
+      .cell.mark-b { border: 2px solid var(--blue); background: rgba(36,86,166,.35); }
+      .cell.solid-r { background: var(--red); border: 2px solid var(--red); }
+      .cell.solid-b { background: var(--blue); border: 2px solid var(--blue); }
+      .cell .tie-n {
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 10px; font-weight: 800; color: var(--tie);
+        text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface);
+      }
+      .cell .pair-dot {
+        position: absolute; width: 6px; height: 6px; border-radius: 50%;
+      }
+      .cell .pair-b { top: -2px; left: -2px; background: var(--red); }
+      .cell .pair-p { bottom: -2px; right: -2px; background: var(--blue); }
+      .cell.bead { color: #fff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+      .log {
+        font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px;
+        max-height: 150px; overflow-y: auto; background: var(--surface2);
+        border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; white-space: pre-wrap;
+      }
+      .seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+      .seg button { flex: 1; background: var(--chip); color: var(--ink); border: 0; padding: 8px 4px; font-size: 13.5px; cursor: pointer; }
+      .seg button.on { background: var(--felt); color: #fff; font-weight: 700; }
+      .count-big { font-size: 26px; font-weight: 800; }
+      .signal-on { color: var(--tie); font-weight: 800; }
+      .hidden-count { letter-spacing: 3px; color: var(--ink-soft); }
+      footer.site {
+        border-top: 3px solid var(--gold-bright); background: var(--felt-deep); color: #dfe9dc;
+        margin-top: 10px;
+      }
+      .footer-in { max-width: 1120px; margin: 0 auto; padding: 20px 16px 26px; font-size: 14px; }
+      .footer-in a { color: var(--gold-bright); }
+      .footer-in .fine { color: #a9bfa9; font-size: 12.5px; margin-top: 8px; }
+      .about-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; box-shadow: var(--shadow); max-width: 78ch; }
+      .about-box p { margin: 0 0 10px; }
+      .manual-bets { display: none; gap: 8px; margin-top: 8px; }
+      .manual-bets.show { display: flex; }
+      .manual-bets button { flex: 1; }
+      .manual-bets button.on-b { background: var(--red); color: #fff; }
+      .manual-bets button.on-p { background: var(--blue); color: #fff; }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="header-in">
+        <div class="brand">
+          <span class="name">Baccarat <span class="lab">Lab</span></span>
+          <span class="tag" data-i="tagline"></span>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button id="lang-en" class="on" type="button">EN</button>
+          <button id="lang-zh" type="button">繁中</button>
+        </div>
+      </div>
+      <nav class="main" id="mainnav"></nav>
+    </header>
+
+    <main>
+      <!-- ================= HOME ================= -->
+      <section class="page" id="page-home">
+        <div class="hero">
+          <h1>Baccarat <span class="lab">Lab</span></h1>
+          <p class="sub" data-i="heroSub"></p>
+          <p data-i="heroBody"></p>
+          <div class="edge-strip">
+            <span class="chipstat"><span data-i="edgeBanker"></span> <b>1.06%</b></span>
+            <span class="chipstat"><span data-i="edgePlayer"></span> <b>1.24%</b></span>
+            <span class="chipstat"><span data-i="edgeTie"></span> <b>14.36%</b></span>
+          </div>
+        </div>
+        <div class="honest" data-i="honestLine"></div>
+        <div class="cards">
+          <div class="card">
+            <h3 data-i="cardGuideT"></h3>
+            <p data-i="cardGuideB"></p>
+            <button type="button" data-goto="guide" data-i="cardGuideBtn"></button>
+          </div>
+          <div class="card">
+            <h3 data-i="cardSideT"></h3>
+            <p data-i="cardSideB"></p>
+            <button type="button" data-goto="sidebets" data-i="cardSideBtn"></button>
+          </div>
+          <div class="card">
+            <h3 data-i="cardSimT"></h3>
+            <p data-i="cardSimB"></p>
+            <button type="button" data-goto="sim" data-i="cardSimBtn"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STRATEGY GUIDE ================= -->
+      <section class="page" id="page-guide">
+        <h2 class="section-title" data-i="guideTitle"></h2>
+        <p class="section-lede" data-i="guideLede"></p>
+        <div class="tabbar" id="guide-tabs"></div>
+        <div class="tabpanel" id="guide-panel"></div>
+      </section>
+
+      <!-- ================= SIDE BETS ================= -->
+      <section class="page" id="page-sidebets">
+        <h2 class="section-title" data-i="sideTitle"></h2>
+        <p class="section-lede" data-i="sideLede"></p>
+        <div class="tabbar" id="side-tabs"></div>
+        <div class="tabpanel" id="side-panel"></div>
+      </section>
+
+      <!-- ================= SIMULATOR ================= -->
+      <section class="page" id="page-sim">
+        <h2 class="section-title" data-i="simTitle"></h2>
+        <p class="section-lede" data-i="simLede"></p>
+        <div class="honest" style="margin:0 0 14px" data-i="simNote"></div>
+        <div class="sim-grid">
+          <div>
+            <div class="panel">
+              <h3 data-i="controlsT"></h3>
+              <div class="field">
+                <label for="sel-method" data-i="fMethod"></label>
+                <select id="sel-method">
+                  <option value="manual" data-i="mManual"></option>
+                  <option value="follow" data-i="mFollow"></option>
+                  <option value="threebead" data-i="mThree"></option>
+                  <option value="bothdir" data-i="mBoth"></option>
+                  <option value="virtual" data-i="mVirtual"></option>
+                  <option value="banker" data-i="mBanker"></option>
+                </select>
+                <div class="manual-bets" id="manual-bets">
+                  <button type="button" class="btn ghost" id="mb-b"></button>
+                  <button type="button" class="btn ghost" id="mb-p"></button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="sel-prog" data-i="fProg"></label>
+                <select id="sel-prog">
+                  <option value="flat" data-i="pFlat"></option>
+                  <option value="martingale" data-i="pMart"></option>
+                  <option value="ladder137" data-i="p137"></option>
+                  <option value="paroli" data-i="pParoli"></option>
+                  <option value="fibonacci" data-i="pFib"></option>
+                  <option value="staircase" data-i="pStair"></option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="in-bankroll" data-i="fBankroll"></label>
+                <input type="number" id="in-bankroll" value="10000" min="100" step="100" />
+              </div>
+              <div class="field">
+                <label for="in-unit" data-i="fUnit"></label>
+                <input type="number" id="in-unit" value="100" min="1" step="1" />
+              </div>
+              <div class="field">
+                <label for="sel-speed" data-i="fSpeed"></label>
+                <select id="sel-speed">
+                  <option value="900" data-i="sSlow"></option>
+                  <option value="350" selected data-i="sMed"></option>
+                  <option value="90" data-i="sFast"></option>
+                </select>
+              </div>
+              <div class="btnrow">
+                <button type="button" class="btn gold" id="btn-deal"></button>
+                <button type="button" class="btn" id="btn-play"></button>
+              </div>
+              <div class="btnrow" style="margin-top:8px">
+                <button type="button" class="btn ghost" id="btn-newshoe"></button>
+                <button type="button" class="btn ghost" id="btn-reset"></button>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 data-i="batchT"></h3>
+              <div class="field">
+                <label for="in-batch" data-i="fBatch"></label>
+                <input type="number" id="in-batch" value="200" min="10" max="5000" step="10" />
+              </div>
+              <div class="btnrow">
+                <button type="button" class="btn" id="btn-batch"></button>
+              </div>
+              <div id="batch-out" style="margin-top:10px; font-size:14px"></div>
+              <canvas class="chart" id="batch-chart" height="190" style="display:none"></canvas>
+            </div>
+
+            <div class="panel">
+              <h3 data-i="d7T"></h3>
+              <div class="field">
+                <label data-i="fD7Mode"></label>
+                <div class="seg" id="d7-seg">
+                  <button type="button" data-d7="off" class="on" data-i="d7Off"></button>
+                  <button type="button" data-d7="learn" data-i="d7Learn"></button>
+                  <button type="button" data-d7="practice" data-i="d7Practice"></button>
+                </div>
+              </div>
+              <div id="d7-body" style="display:none">
+                <div style="display:flex; gap:18px; flex-wrap:wrap; align-items:baseline">
+                  <div><div style="font-size:12px; color:var(--ink-soft)" data-i="d7RC"></div><div class="count-big" id="d7-rc">0</div></div>
+                  <div><div style="font-size:12px; color:var(--ink-soft)" data-i="d7TC"></div><div class="count-big" id="d7-tc">0.0</div></div>
+                  <div><div style="font-size:12px; color:var(--ink-soft)" data-i="d7Decks"></div><div class="count-big" id="d7-decks">8.0</div></div>
+                </div>
+                <div id="d7-signal" style="margin-top:8px; font-size:15px"></div>
+                <div id="d7-practice" style="display:none; margin-top:10px">
+                  <div class="field">
+                    <label for="in-guess" data-i="d7Guess"></label>
+                    <input type="number" id="in-guess" step="1" />
+                  </div>
+                  <div class="btnrow">
+                    <button type="button" class="btn ghost" id="btn-guess"></button>
+                    <button type="button" class="btn ghost" id="btn-reveal"></button>
+                  </div>
+                  <div id="guess-out" style="margin-top:6px; font-size:14px"></div>
+                </div>
+                <p style="font-size:13px; color:var(--ink-soft); margin:10px 0 0" data-i="d7Help"></p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3 data-i="tableT"></h3>
+              <div class="hand-display">
+                <div class="hand-box player">
+                  <h4 data-i="playerHand"></h4>
+                  <div class="pcards" id="p-cards"></div>
+                  <div><span data-i="totalLbl"></span> <span class="total" id="p-total">–</span></div>
+                </div>
+                <div class="hand-box banker">
+                  <h4 data-i="bankerHand"></h4>
+                  <div class="pcards" id="b-cards"></div>
+                  <div><span data-i="totalLbl"></span> <span class="total" id="b-total">–</span></div>
+                </div>
+              </div>
+              <div class="result-banner" id="result-banner">—</div>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; font-size:14px">
+                <span class="sg" style="background:var(--surface2); border:1px solid var(--line); border-radius:10px; padding:7px 12px"><span data-i="shoeLbl"></span> <b id="st-shoe">1</b></span>
+                <span class="sg" style="background:var(--surface2); border:1px solid var(--line); border-radius:10px; padding:7px 12px"><span data-i="cardsLeft"></span> <b id="st-cards">416</b></span>
+                <span class="sg" style="background:var(--surface2); border:1px solid var(--line); border-radius:10px; padding:7px 12px"><span data-i="nextBet"></span> <b id="st-nextbet">—</b></span>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 data-i="bankrollT"></h3>
+              <canvas class="chart" id="br-chart" height="190"></canvas>
+              <table class="stats-table" style="margin-top:8px">
+                <tr><td data-i="stBankroll"></td><td class="v" id="st-bankroll">–</td></tr>
+                <tr><td data-i="stPL"></td><td class="v" id="st-pl">–</td></tr>
+                <tr><td data-i="stHands"></td><td class="v" id="st-hands">0</td></tr>
+                <tr><td data-i="stWL"></td><td class="v" id="st-wl">0 / 0 / 0</td></tr>
+                <tr><td data-i="stPeak"></td><td class="v" id="st-peak">–</td></tr>
+                <tr><td data-i="stDD"></td><td class="v" id="st-dd">–</td></tr>
+                <tr><td data-i="stLargest"></td><td class="v" id="st-largest">–</td></tr>
+              </table>
+            </div>
+
+            <div class="panel">
+              <h3 data-i="roadsT"></h3>
+              <div class="roads">
+                <div class="road-box"><h4 data-i="roadBead"></h4><div class="road-scroll"><div class="road-grid" id="road-bead"></div></div></div>
+                <div class="road-box"><h4 data-i="roadBig"></h4><div class="road-scroll"><div class="road-grid" id="road-big"></div></div></div>
+                <div class="road-box"><h4 data-i="roadEye"></h4><div class="road-scroll"><div class="road-grid" id="road-eye"></div></div></div>
+                <div class="road-box"><h4 data-i="roadSmall"></h4><div class="road-scroll"><div class="road-grid" id="road-small"></div></div></div>
+                <div class="road-box"><h4 data-i="roadCock"></h4><div class="road-scroll"><div class="road-grid" id="road-cock"></div></div></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 data-i="logT"></h3>
+              <div class="log" id="sim-log"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ABOUT ================= -->
+      <section class="page" id="page-about">
+        <h2 class="section-title" data-i="aboutTitle"></h2>
+        <div class="about-box" id="about-body"></div>
+      </section>
+    </main>
+
+    <footer class="site">
+      <div class="footer-in">
+        <div><span data-i="footBy"></span> <b>Tim Lin</b> · <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a></div>
+        <div class="fine" data-i="footFine"></div>
+      </div>
+    </footer>
+
+    <script>
+      /* ================= i18n strings ================= */
+      var I18N = {
+        en: {
+          tagline: "Baccarat strategy guides, simulators & side-bet math",
+          navHome: "Home", navGuide: "Strategy Guide", navSide: "Side Bets & Counting", navSim: "Simulator", navAbout: "About",
+          heroSub: "Baccarat strategy guides, simulators & side-bet math",
+          heroBody: "A practical, honest baccarat resource: the betting systems players actually use — explained step by step, with their real mechanics — the card-counting math behind the side bets, and a full 8-deck simulator so you can test every idea yourself before a single real chip is at risk.",
+          edgeBanker: "Banker house edge", edgePlayer: "Player house edge", edgeTie: "Tie house edge",
+          honestLine: "<b>The honest part:</b> everything here is educational. No bet-selection method and no progression changes baccarat's fixed house edge — systems only reshape variance. What they <i>can</i> do is structure your play, and this site shows you exactly how, and exactly where the math pushes back.",
+          cardGuideT: "Strategy Guide", cardGuideB: "Bet-selection methods and stake progressions, each on its own tab: the three-bead-road counter-bet, follow-the-winner, the 137 ladder, Martingale, Paroli, Fibonacci, and more — plus a step-by-step for the signature counter-bet + 137 play and the honest verdicts.", cardGuideBtn: "Read the guides",
+          cardSideT: "Side Bets & Card Counting", cardSideB: "Dragon 7, Panda 8, pairs, Tie and Tiger Tie — the published counting systems, the trigger counts, and realistic profit numbers, tab by tab. One of them is genuinely attackable. The rest mostly aren't.", cardSideBtn: "See the math",
+          cardSimT: "Simulator", cardSimB: "A real 8-deck shoe with proper drawing rules, all five casino scoreboards, switchable systems and progressions, a bankroll chart, batch runs over hundreds of shoes, and a Dragon 7 counting-practice mode.", cardSimBtn: "Open the simulator",
+          guideTitle: "Strategy Guide", guideLede: "Each system gets its own tab: how it selects bets, how it sizes them, and an honest verdict. Selection methods decide <i>where</i> to bet; progressions decide <i>how much</i>. Neither changes the house edge — the Verdicts tab explains why that still leaves plenty worth understanding.",
+          sideTitle: "Side Bets & Card Counting", sideLede: "Side bets carry big house edges, but a few are mathematically countable because their payouts depend on specific cards. Each tab covers one bet: the payout, the edge, the counting system if one exists, and a realistic verdict.",
+          simTitle: "Baccarat Simulator", simLede: "A full 8-deck Punto Banco shoe: proper drawing rules, cut card, 5% commission on Banker wins, ties push. Pick a selection method and a progression, set your bankroll, and run it — hand by hand, at speed, or across hundreds of shoes at once.",
+          simNote: "<b>Simulation only — no real money.</b> No selection or progression system changes baccarat's fixed house edge: Banker 1.06%, Player 1.24%, Tie 14.36%. Systems reshape variance; the edge grinds on regardless. Watch the batch results if you don't believe it.",
+          controlsT: "Controls", fMethod: "Bet selection", fProg: "Progression", fBankroll: "Starting bankroll ($)", fUnit: "Base unit ($)", fSpeed: "Playback speed",
+          mManual: "Manual (choose each hand)", mFollow: "Follow the winner", mThree: "Three-bead road counter-bet", mBoth: "One method, both directions (2 flat tracks)", mVirtual: "Virtual Player signal", mBanker: "Always Banker",
+          pFlat: "Flat betting", pMart: "Martingale (double on loss)", p137: "137 six-level ladder", pParoli: "Paroli (double on win, max 3)", pFib: "Fibonacci win-chase (5 bets)", pStair: "Staircase (up on loss, down on win)",
+          sSlow: "Slow", sMed: "Medium", sFast: "Fast",
+          deal: "Deal 1 hand", play: "▶ Play", pause: "⏸ Pause", newShoe: "New shoe", reset: "Reset session",
+          manualB: "Bet Banker", manualP: "Bet Player",
+          batchT: "Batch mode", fBatch: "Shoes to simulate", runBatch: "Run batch", batchRunning: "Running…",
+          d7T: "Dragon 7 Count Practice", fD7Mode: "Practice mode", d7Off: "Off", d7Learn: "Learn (count shown)", d7Practice: "Practice (count hidden)",
+          d7RC: "Running count", d7TC: "True count", d7Decks: "Decks left",
+          d7Bet: "Count is hot — a published trigger (true count ≥ +4). Dragon 7 spot.", d7NoBet: "Below the +4 trigger. No Dragon 7 bet.",
+          d7Guess: "Your running-count guess", check: "Check", reveal: "Reveal count",
+          d7Help: "Jacobson count: 8s and 9s = +2; 4s–7s = −1; all other cards = 0. Count every card as it is dealt. True count = running count ÷ decks remaining. In Practice mode the count is hidden — track it yourself, then check.",
+          guessRight: "Correct! The running count is ", guessWrong: "Not quite — the running count is ", guessEmpty: "Enter your guess first.",
+          tableT: "The Table", playerHand: "Player 閒", bankerHand: "Banker 莊", totalLbl: "Total",
+          shoeLbl: "Shoe", cardsLeft: "Cards left", nextBet: "Next bet",
+          bankrollT: "Bankroll & Session Stats", stBankroll: "Bankroll", stPL: "Profit / loss", stHands: "Hands played", stWL: "Wins / Losses / Ties", stPeak: "Peak bankroll", stDD: "Max drawdown", stLargest: "Largest bet placed",
+          roadsT: "Scoreboards", roadBead: "Bead Plate 珠盤路", roadBig: "Big Road 大路", roadEye: "Big Eye Boy 大眼仔路", roadSmall: "Small Road 小路", roadCock: "Cockroach Pig 蟑螂路",
+          logT: "Hand Log",
+          aboutTitle: "About Baccarat Lab",
+          footBy: "Baccarat Lab — by", footFine: "Educational content about baccarat strategy and mathematics. Nothing here is financial or gambling advice, and no system overcomes the house edge. Play responsibly, within your means.",
+          resB: "Banker wins", resP: "Player wins", resT: "Tie — bets push",
+          nat: "natural", logBet: "Bet", logOn: "on", logWin: "won", logLose: "lost", logPush: "push",
+          logShoe: "— New shoe #", logShoeEnd: "— Shoe finished (cut card) —",
+          logBust: "Bankroll can no longer cover the next bet. Session stopped — reset or lower the unit.",
+          logNoBet: "no bet (signal off / waiting for pattern)",
+          batchDone: "Batch complete", bShoes: "shoes", bProfitable: "profitable shoes", bAvg: "Average shoe", bBest: "Best shoe", bWorst: "Worst shoe", bTotal: "Total across all shoes", bBusted: "shoes busted",
+          vpSignal: "VP signal", vpOn: "ON — betting", vpOff: "OFF — sitting out",
+          shoeWord: "Shoe", handWord: "Hand"
+        },
+        zh: {
+          tagline: "百家樂策略指南、模擬器與邊注數學",
+          navHome: "首頁", navGuide: "策略指南", navSide: "邊注與算牌", navSim: "模擬器", navAbout: "關於",
+          heroSub: "百家樂策略指南、模擬器與邊注數學",
+          heroBody: "一個實用又誠實的百家樂資源：介紹玩家真正在用的投注系統——一步步拆解真實機制——加上邊注背後的算牌數學，以及完整的八副牌模擬器，讓你在押下任何一枚真籌碼之前，先親手驗證每一個想法。",
+          edgeBanker: "莊家優勢", edgePlayer: "閒家優勢", edgeTie: "和局優勢",
+          honestLine: "<b>先說誠實話：</b>本站內容純屬教育性質。任何選注方法、任何纜法都改變不了百家樂固定的莊家優勢——系統只能改變波動的形狀。它們能做的是讓你的打法有結構，而本站會清楚告訴你怎麼做、以及數學在哪裡會反撲。",
+          cardGuideT: "策略指南", cardGuideB: "選注法與注碼纜法，每個系統一個分頁：三珠路反打一口、莊閒跟打、137 纜、直纜、帕羅利、斐波那契等等——還有招牌打法「反打一口 + 137」的完整步驟與誠實結論。", cardGuideBtn: "閱讀指南",
+          cardSideT: "邊注與算牌", cardSideB: "龍七、熊貓八、對子、和局與虎和——逐一分頁介紹公開發表的算牌系統、進場真數與實際的獲利數字。其中只有一個真的能打，其餘大多不行。", cardSideBtn: "看數學分析",
+          cardSimT: "模擬器", cardSimB: "真實八副牌牌靴、標準補牌規則、五種賭場路單、 可切換的系統與纜法、資金曲線圖、數百靴批量測試，還有龍七算牌練習模式。", cardSimBtn: "開啟模擬器",
+          guideTitle: "策略指南", guideLede: "每個系統一個分頁：怎麼選注、怎麼下注、以及誠實評價。選注法決定「押哪邊」；纜法決定「押多少」。兩者都改變不了莊家優勢——「誠實結論」分頁會說明為什麼即便如此，這些東西仍然值得理解。",
+          sideTitle: "邊注與算牌", sideLede: "邊注的莊家優勢都很大，但因為賠付取決於特定牌張，少數邊注在數學上是可以算的。每個分頁介紹一種邊注：賠率、莊家優勢、算牌系統（如果有的話），以及現實的評價。",
+          simTitle: "百家樂模擬器", simLede: "完整的八副牌百家樂牌靴：標準補牌規則、切牌卡、莊贏抽 5% 佣金、和局退注。選一個選注法和一套纜法，設定資金，就能開始——逐局玩、快速跑，或一次跑數百靴。",
+          simNote: "<b>純模擬——不涉及真錢。</b>任何選注法或纜法都改變不了百家樂固定的莊家優勢：莊 1.06%、閒 1.24%、和 14.36%。系統只能改變波動形狀，優勢照樣慢慢磨。不信的話，看批量測試結果。",
+          controlsT: "控制台", fMethod: "選注法", fProg: "注碼纜法", fBankroll: "起始資金（$）", fUnit: "基本注碼（$）", fSpeed: "播放速度",
+          mManual: "手動（每局自選）", mFollow: "莊閒跟打（跟贏家）", mThree: "三珠路反打一口", mBoth: "單一方法正反打（兩條平注線）", mVirtual: "虛擬玩家訊號", mBanker: "固定押莊",
+          pFlat: "平注", pMart: "直纜（輸了加倍）", p137: "137 六層纜法", pParoli: "帕羅利（贏了加倍，最多 3 口）", pFib: "五注斐氏勝追纜", pStair: "樓梯纜（輸升贏降）",
+          sSlow: "慢", sMed: "中", sFast: "快",
+          deal: "發一局", play: "▶ 播放", pause: "⏸ 暫停", newShoe: "新牌靴", reset: "重置",
+          manualB: "押莊", manualP: "押閒",
+          batchT: "批量模式", fBatch: "模擬牌靴數", runBatch: "開始批量測試", batchRunning: "計算中…",
+          d7T: "龍七算牌練習", fD7Mode: "練習模式", d7Off: "關閉", d7Learn: "學習（顯示計數）", d7Practice: "練習（隱藏計數）",
+          d7RC: "流水計數", d7TC: "真數", d7Decks: "剩餘副數",
+          d7Bet: "計數已熱——達到公開發表的進場點（真數 ≥ +4），可以下龍七。", d7NoBet: "未達 +4 進場點，不要下龍七。",
+          d7Guess: "你算的流水計數", check: "核對", reveal: "顯示計數",
+          d7Help: "Jacobson 計數法：8 與 9 = +2；4–7 = −1；其他牌 = 0。每發出一張牌就計數。真數 = 流水計數 ÷ 剩餘副數。練習模式會隱藏計數——自己默算，再核對。",
+          guessRight: "答對了！流水計數是 ", guessWrong: "不對——流水計數是 ", guessEmpty: "先輸入你的猜測。",
+          tableT: "牌桌", playerHand: "閒家 Player", bankerHand: "莊家 Banker", totalLbl: "點數",
+          shoeLbl: "牌靴", cardsLeft: "剩餘牌數", nextBet: "下一注",
+          bankrollT: "資金與本場數據", stBankroll: "目前資金", stPL: "盈虧", stHands: "已玩局數", stWL: "贏 / 輸 / 和", stPeak: "資金高峰", stDD: "最大回撤", stLargest: "最大單注",
+          roadsT: "路單", roadBead: "珠盤路 Bead Plate", roadBig: "大路 Big Road", roadEye: "大眼仔路 Big Eye Boy", roadSmall: "小路 Small Road", roadCock: "蟑螂路 Cockroach Pig",
+          logT: "對局紀錄",
+          aboutTitle: "關於 Baccarat Lab",
+          footBy: "Baccarat Lab — 作者", footFine: "本站為百家樂策略與數學的教育內容，不構成任何財務或博弈建議，任何系統都無法克服莊家優勢。請理性娛樂、量力而為。",
+          resB: "莊贏", resP: "閒贏", resT: "和局——注金退回",
+          nat: "例牌", logBet: "下注", logOn: "押", logWin: "贏", logLose: "輸", logPush: "退注",
+          logShoe: "—— 新牌靴 #", logShoeEnd: "—— 本靴結束（切牌卡）——",
+          logBust: "資金不足以支付下一注，本場結束——請重置或調低基本注碼。",
+          logNoBet: "本局不下注（無訊號／等待路型）",
+          batchDone: "批量測試完成", bShoes: "靴", bProfitable: "獲利牌靴", bAvg: "平均每靴", bBest: "最佳一靴", bWorst: "最差一靴", bTotal: "全部合計", bBusted: "靴爆倉",
+          vpSignal: "虛擬玩家訊號", vpOn: "開啟——跟注", vpOff: "關閉——觀望",
+          shoeWord: "靴", handWord: "局"
+        }
+      };
+      var LANG = "en";
+      function t(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; }
+
+      /* ================= Strategy Guide tabs ================= */
+      var GUIDE_TABS = [
+        {
+          id: "threebead", title: { en: "Three-Bead Road Counter-Bet", zh: "三珠路反打一口" },
+          en: `<div class="kicker">Bet selection</div><h3>Three-Bead Road Counter-Bet （三珠路反打一口）</h3>
+          <p>The bead plate records every result in order. The <b>three-bead road</b> simply groups that stream into consecutive triplets — three results at a time — and reads each triplet as a pattern. There are only eight possible triplets, and players sort them into four families:</p>
+          <table class="data"><tr><th>Triplet</th><th>Family</th><th>Shape</th></tr>
+          <tr><td>BBB · PPP</td><td>Streak （連式）</td><td>Three the same</td></tr>
+          <tr><td>BPB · PBP</td><td>Chop （跳式）</td><td>Alternating</td></tr>
+          <tr><td>BBP · PPB</td><td>Formal （正式）</td><td>Pair, then a switch</td></tr>
+          <tr><td>BPP · PBB</td><td>Reverse （反式）</td><td>One, then a pair</td></tr></table>
+          <p>Every triplet implies a "next" result — the result that would continue its pattern (a streak implies more of the same, a chop implies another switch, and so on). The counter-bet play, <b>反打一口</b>, does the opposite of what intuition suggests:</p>
+          <ol>
+          <li>Wait for a triplet to complete.</li>
+          <li>Work out which result the triplet's pattern implies next.</li>
+          <li>Bet <b>against</b> that implied result — for exactly <b>one hand</b> （一口 = one mouthful, one bet).</li>
+          <li>Win or lose, stop. The hand you just played becomes the first bead of the next triplet, and the process restarts.</li>
+          </ol>
+          <p>The method is designed for "bad roads" （爛路） — choppy shoes with no readable trend, where following patterns keeps getting chopped up. Betting against the pattern's implication for a single hand is a way of fading the crowd's most obvious read.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> the counter-bet is a discipline device, not an edge. Each hand is independent — the triplet has no memory and no influence on the next cards. What the method genuinely does is limit you to one considered bet per three results, which slows your exposure per shoe. Pair it with the 137 ladder (see the Signature Play tab) and the stakes — not the selection — become the real story.</div>`,
+          zh: `<div class="kicker">選注法</div><h3>三珠路反打一口</h3>
+          <p>珠盤路會依序記錄每一局的結果。<b>三珠路</b>就是把這串結果每三個一組來分組，把每一組三連珠看成一個路型。三連珠只有八種可能，玩家把它們歸成四類：</p>
+          <table class="data"><tr><th>三連珠</th><th>類別</th><th>形狀</th></tr>
+          <tr><td>莊莊莊 · 閒閒閒</td><td>連式</td><td>三個相同</td></tr>
+          <tr><td>莊閒莊 · 閒莊閒</td><td>跳式</td><td>交替單跳</td></tr>
+          <tr><td>莊莊閒 · 閒閒莊</td><td>正式</td><td>先一對、再轉向</td></tr>
+          <tr><td>莊閒閒 · 閒莊莊</td><td>反式</td><td>先一個、再成對</td></tr></table>
+          <p>每一組三連珠都「暗示」著下一個結果——能延續其路型的那個結果（連式暗示繼續連、跳式暗示繼續跳，依此類推）。而反打一口的做法恰恰與直覺相反：</p>
+          <ol>
+          <li>等一組三連珠完成。</li>
+          <li>判斷該路型暗示的下一個結果是什麼。</li>
+          <li>下注押<b>相反</b>的那一邊——只押<b>一口</b>（一局）。</li>
+          <li>無論輸贏都停手。剛打完的這一局成為下一組三連珠的第一顆珠，重新開始。</li>
+          </ol>
+          <p>這個方法專門為「爛路」設計——沒有明顯趨勢、追路型會一直被切斷的牌靴。押路型暗示的反面一口，等於是逆著最顯而易見的讀路方向下注。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>反打一口是紀律工具，不是優勢。每一局都是獨立的——三連珠沒有記憶，也影響不了下一張牌。它真正的作用是讓你每三個結果才下一次經過思考的注，從而降低每靴的曝險速度。若搭配 137 纜法（見「招牌打法」分頁），真正的主角是注碼，而不是選注。</div>`
+        },
+        {
+          id: "follow", title: { en: "Follow the Winner", zh: "莊閒跟打" },
+          en: `<div class="kicker">Bet selection</div><h3>Follow the Winner （莊閒跟打）</h3>
+          <p>The simplest selection method in the game: <b>bet on whichever side won the last hand</b>. Banker won? Bet Banker. Player won? Bet Player. On a tie, keep the same bet as the previous hand.</p>
+          <table class="data"><tr><th>Last result</th><th>Your next bet</th></tr>
+          <tr><td>Banker</td><td>Banker</td></tr>
+          <tr><td>Player</td><td>Player</td></tr>
+          <tr><td>Tie</td><td>Same as your previous bet</td></tr></table>
+          <p>Why players like it: it needs no scoreboard reading, it automatically rides streaks (long Banker or Player runs — the famous "dragons"), and it never fights the shoe. In the simulator it is the baseline the fancier methods are measured against, and it doubles as the base method for the both-directions play on the next tab.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> following the winner wins exactly as often as the shoe's natural Banker/Player split allows — past results don't change the next hand's odds. Its real benefit is behavioral: it removes indecision. You'll ride every streak and also buy the top of every streak, one hand late, every time.</div>`,
+          zh: `<div class="kicker">選注法</div><h3>莊閒跟打（跟贏家）</h3>
+          <p>全場最簡單的選注法：<b>上一局哪邊贏，就押哪邊</b>。莊贏就押莊，閒贏就押閒；若開和，維持上一局的注不變。</p>
+          <table class="data"><tr><th>上一局結果</th><th>你下一注</th></tr>
+          <tr><td>莊</td><td>莊</td></tr>
+          <tr><td>閒</td><td>閒</td></tr>
+          <tr><td>和</td><td>與上一注相同</td></tr></table>
+          <p>玩家喜歡它的原因：不用讀路、自動跟上連贏的長龍（莊龍、閒龍），而且永遠不跟牌靴作對。在模擬器裡，它是其他進階方法的比較基準，也是下一個分頁「正反打」的基礎方法。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>跟打的勝率就是牌靴本身莊閒比例決定的勝率——過去的結果不會改變下一局的機率。它真正的好處是行為面的：消除猶豫。你會跟上每一次連贏，也會在每次連贏的頂點晚一局買進，次次如此。</div>`
+        },
+        {
+          id: "bothdir", title: { en: "One Method, Both Directions", zh: "單一方法正反打" },
+          en: `<div class="kicker">Bet selection</div><h3>Single Method, Both Directions, Flat Stakes （正反打 + 平注）</h3>
+          <p>A deliberately calmer style of play built on three rules:</p>
+          <ol>
+          <li><b>Pick one</b> selection method (follow-the-winner is the usual choice) and commit to it for the whole shoe — no switching mid-shoe.</li>
+          <li>Run it in <b>both directions</b>: one track bets the method's pick （正打）, a parallel track bets the exact opposite （反打）.</li>
+          <li><b>Flat stakes only.</b> Every bet is one base unit. No progressions, no chasing, ever.</li>
+          </ol>
+          <p>The two tracks mostly cancel each other out; what remains is the slow drag of the Banker commission asymmetry and the house edge on the total action. Players use it as a low-drama way to stay at the table, generate play for comps, and remove every in-the-moment decision.</p>
+          <p>In the simulator, this mode runs both tracks on the same shoe and combines their results into one bankroll, so you can watch the cancellation happen in real numbers.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> betting both directions doesn't create an edge — it manufactures near-certain slow loss in exchange for near-zero variance. That trade can be rational if what you're really buying is table time and casino comps worth more than the expected loss. As a profit system, it isn't one.</div>`,
+          zh: `<div class="kicker">選注法</div><h3>單一方法正反打 + 平注</h3>
+          <p>一種刻意求穩的打法，建立在三條規則上：</p>
+          <ol>
+          <li><b>只選一種</b>選注法（通常是莊閒跟打），整靴牌都用它——中途不換。</li>
+          <li><b>正反兩個方向同時打</b>：一條線押方法選的那邊（正打），另一條平行線押完全相反的那邊（反打）。</li>
+          <li><b>只准平注。</b>每一注都是基本注碼，永遠不用纜法、不追注。</li>
+          </ol>
+          <p>兩條線大部分互相抵銷，剩下的就是莊家抽傭的不對稱與總投注額上的莊家優勢慢慢侵蝕。玩家用它來低波動地留在牌桌上、累積賭場回饋（comps），並消除所有臨場決策。</p>
+          <p>在模擬器中，這個模式會在同一靴牌上同時跑兩條線，合併成一條資金曲線，讓你用真實數字看抵銷的過程。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>正反打不會創造優勢——它是用「近乎確定的緩慢虧損」換「近乎零的波動」。如果你買的其實是上桌時間與價值超過預期虧損的賭場回饋，這筆交易可以是理性的。但作為獲利系統，它不是。</div>`
+        },
+        {
+          id: "virtual", title: { en: "The Virtual Player", zh: "虛擬玩家" },
+          en: `<div class="kicker">Bet selection · discipline</div><h3>The Virtual Player （虛擬玩家）</h3>
+          <p>The Virtual Player is a <b>rule-based imaginary bettor</b> whose play you simulate alongside the real shoe. The classic configuration is deliberately boring: the virtual player flat-bets the same simple rule every hand — no reversing direction, no progressions, no hunches.</p>
+          <h4>How the signal works</h4>
+          <ol>
+          <li>Define the virtual player's fixed rule in advance (for example: always flat-bet Banker).</li>
+          <li>Track its hypothetical results hand by hand, as if it were betting real money.</li>
+          <li>Only place <b>your</b> real bets when the virtual player is performing well — when its recent simulated record says your shared rule is "in tune" with this shoe. A common trigger is a voting tally: the virtual player's wins versus losses over a rolling window; bet only when the tally is clearly positive.</li>
+          <li>When the virtual player's record turns cold, sit out. No real money rides while the signal is off.</li>
+          </ol>
+          <p>In the simulator, Virtual Player mode tracks a bot that flat-bets Banker every hand. Your real bets switch on only while the bot has won at least 6 of its last 10 virtual bets, and they follow Banker with whatever progression you've selected.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> the Virtual Player cannot manufacture an edge — a bot's past simulated results say nothing about the next independent hand. Its genuine value is psychological: it gives loss-chasing emotions a referee. Many players find "the signal is off" far easier to obey than "I should stop," and any structure that stops you betting every hand reduces the edge's total bite per hour.</div>`,
+          zh: `<div class="kicker">選注法 · 紀律</div><h3>虛擬玩家</h3>
+          <p>虛擬玩家是一個<b>依照固定規則下注的想像玩家</b>，你讓它跟著真實牌靴同步「模擬下注」。經典設定刻意無聊：虛擬玩家每一局都用同一個簡單規則平注——不反向、不用纜法、不憑感覺。</p>
+          <h4>訊號如何運作</h4>
+          <ol>
+          <li>事先定義虛擬玩家的固定規則（例如：永遠平注押莊）。</li>
+          <li>逐局記錄它假想下注的結果，彷彿它押的是真錢。</li>
+          <li>只有當虛擬玩家表現良好時，才下<b>你自己</b>的真注——也就是它近期的模擬戰績顯示這套規則「跟這靴牌合拍」時。常見的觸發方式是投票統計：虛擬玩家在滾動窗口內的勝負比，只有當票數明顯偏正時才跟注。</li>
+          <li>虛擬玩家轉冷時就離手觀望。訊號關閉期間，真錢不下場。</li>
+          </ol>
+          <p>在模擬器中，虛擬玩家模式會追蹤一個每局平注押莊的機器人。只有當它最近 10 次虛擬下注至少贏了 6 次，你的真注才會啟動，跟著押莊，並搭配你所選的纜法。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>虛擬玩家變不出優勢——機器人過去的模擬結果，對下一局獨立的牌局毫無預測力。它真正的價值在心理層面：給追注的情緒一個裁判。許多玩家發現「訊號沒開」比「我應該停手」容易遵守得多；任何能讓你不每局都下注的結構，都能降低莊家優勢每小時咬掉你的總額。</div>`
+        },
+        {
+          id: "martingale", title: { en: "Martingale", zh: "直纜（馬丁格爾）" },
+          en: `<div class="kicker">Progression</div><h3>Martingale — the Straight Cable （直纜）</h3>
+          <p>The oldest loss-chase in the book. The rule fits in one line: <b>after every loss, double your bet; after a win, reset to one base unit.</b> On a tie, hold the current stake.</p>
+          <table class="data"><tr><th>Consecutive losses</th><th class="num">Next bet (units)</th><th class="num">Total lost so far</th></tr>
+          <tr><td>0</td><td class="num">1</td><td class="num">0</td></tr>
+          <tr><td>1</td><td class="num">2</td><td class="num">1</td></tr>
+          <tr><td>2</td><td class="num">4</td><td class="num">3</td></tr>
+          <tr><td>3</td><td class="num">8</td><td class="num">7</td></tr>
+          <tr><td>4</td><td class="num">16</td><td class="num">15</td></tr>
+          <tr><td>5</td><td class="num">32</td><td class="num">31</td></tr>
+          <tr><td>6</td><td class="num">64</td><td class="num">63</td></tr>
+          <tr><td>7</td><td class="num">128</td><td class="num">127</td></tr></table>
+          <p>Any win recovers all previous losses plus one unit of profit (slightly less on Banker, after the 5% commission). That's the seduction: the system "works" almost every session — until a losing streak of 7–8 hands, which is a matter of when, not if, meets a table limit or an empty bankroll and the entire accumulated profit plus 127+ units disappears in one sequence.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> Martingale converts many small wins into rare catastrophic losses at exactly unchanged expected value. Run it in the simulator at fast speed and watch the bankroll chart: a staircase up, then a cliff. The cliff always arrives.</div>`,
+          zh: `<div class="kicker">纜法</div><h3>直纜（馬丁格爾）</h3>
+          <p>歷史最悠久的負追纜法，規則一句話講完：<b>每輸一局，注碼加倍；贏了就回到基本注碼。</b>和局時維持目前注碼。</p>
+          <table class="data"><tr><th>連輸局數</th><th class="num">下一注（單位）</th><th class="num">累計已輸</th></tr>
+          <tr><td>0</td><td class="num">1</td><td class="num">0</td></tr>
+          <tr><td>1</td><td class="num">2</td><td class="num">1</td></tr>
+          <tr><td>2</td><td class="num">4</td><td class="num">3</td></tr>
+          <tr><td>3</td><td class="num">8</td><td class="num">7</td></tr>
+          <tr><td>4</td><td class="num">16</td><td class="num">15</td></tr>
+          <tr><td>5</td><td class="num">32</td><td class="num">31</td></tr>
+          <tr><td>6</td><td class="num">64</td><td class="num">63</td></tr>
+          <tr><td>7</td><td class="num">128</td><td class="num">127</td></tr></table>
+          <p>只要贏一局，就能追回之前所有虧損再加一個單位的利潤（押莊還要扣 5% 佣金，略少一點）。這就是它誘人的地方：這套系統「幾乎每一場都有效」——直到連輸 7–8 局出現為止。那不是會不會發生的問題，只是時間問題；一旦撞上桌限或資金見底，累積的全部利潤加上 127 個單位以上，會在一串牌裡消失。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>直纜把許多小贏換成罕見的災難性虧損，期望值分毫不變。在模擬器裡用快速播放跑一遍，看資金曲線：階梯向上，然後懸崖。懸崖永遠會來。</div>`
+        },
+        {
+          id: "ladder137", title: { en: "The 137 Ladder", zh: "137 六層纜法" },
+          en: `<div class="kicker">Progression</div><h3>The 137 Six-Level Ladder （137 六層纜法）</h3>
+          <p>A six-level negative progression — a loss-chase with a gentler slope than Martingale. The levels scale in a 1-3-7 pattern, each step roughly doubling the previous one and adding a unit:</p>
+          <table class="data"><tr><th>Level</th><th class="num">Bet (units)</th><th class="num">Cumulative if all 6 lose</th></tr>
+          <tr><td>1</td><td class="num">1</td><td class="num">1</td></tr>
+          <tr><td>2</td><td class="num">3</td><td class="num">4</td></tr>
+          <tr><td>3</td><td class="num">7</td><td class="num">11</td></tr>
+          <tr><td>4</td><td class="num">15</td><td class="num">26</td></tr>
+          <tr><td>5</td><td class="num">31</td><td class="num">57</td></tr>
+          <tr><td>6</td><td class="num">63</td><td class="num">126</td></tr></table>
+          <h4>Rules</h4>
+          <ul>
+          <li>Start at level 1. <b>Every loss climbs one level; any win returns you to level 1.</b> Ties hold the level.</li>
+          <li>A win at any level recovers most or all of the sequence's losses and locks a small profit (exact recovery varies with Banker commission).</li>
+          <li><b>Ladder bust:</b> if all six levels lose in a row, the sequence costs 126 units. You accept it and stop the sequence — this is the built-in catastrophe that the frequent small wins are priced against.</li>
+          </ul>
+          <p>Compared with Martingale, the 137 ladder risks a similar total (126 vs 127 units) but spreads it over six decisions instead of seven doublings, and mid-ladder wins recover the sequence earlier. It is the staking half of the signature play on the next tab.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> gentler slope, same destination. Six consecutive losses happen far more often than intuition says — across a few hundred hands, expect to meet them. The ladder trades win-frequency for tail risk, exactly like every loss-chase: the fatal flaw is that the recovery plan assumes a win arrives before the ladder ends, and probability makes no such promise.</div>`,
+          zh: `<div class="kicker">纜法</div><h3>137 六層纜法</h3>
+          <p>一種六層的負追纜法——追注的斜率比直纜溫和。層級按 1-3-7 的節奏放大，每一級大致是前一級的兩倍再加一個單位：</p>
+          <table class="data"><tr><th>層級</th><th class="num">注碼（單位）</th><th class="num">六層全輸累計</th></tr>
+          <tr><td>1</td><td class="num">1</td><td class="num">1</td></tr>
+          <tr><td>2</td><td class="num">3</td><td class="num">4</td></tr>
+          <tr><td>3</td><td class="num">7</td><td class="num">11</td></tr>
+          <tr><td>4</td><td class="num">15</td><td class="num">26</td></tr>
+          <tr><td>5</td><td class="num">31</td><td class="num">57</td></tr>
+          <tr><td>6</td><td class="num">63</td><td class="num">126</td></tr></table>
+          <h4>規則</h4>
+          <ul>
+          <li>從第 1 層開始。<b>每輸一局升一層；贏任何一局就回到第 1 層。</b>和局維持層級。</li>
+          <li>在任何層級獲勝，都能追回這串的大部分或全部虧損並鎖定小利潤（確切追回金額受莊家 5% 佣金影響）。</li>
+          <li><b>斷纜：</b>若六層連續全輸，這一串成本是 126 個單位。接受它、停止這一串——這是內建的災難情境，與頻繁的小贏互為代價。</li>
+          </ul>
+          <p>與直纜相比，137 纜的總風險相近（126 對 127 單位），但分散在六次決策裡，中段獲勝也更早追回。它是下一個分頁「招牌打法」的注碼部分。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>斜率溫和，終點相同。連輸六局發生的頻率遠比直覺高——打幾百局，就要有心理準備會遇上。這套纜法跟所有負追一樣，是用勝率換尾部風險：它的致命傷在於「追回計畫」假設在纜斷之前一定會贏一局，而機率從不做這種承諾。</div>`
+        },
+        {
+          id: "signature", title: { en: "Signature Play: How-To", zh: "招牌打法：步驟教學" },
+          en: `<div class="kicker">Step by step</div><h3>The Signature Play: Three-Bead Counter-Bet + 137 Ladder</h3>
+          <p>This combines the two systems from the earlier tabs into one complete method: the three-bead road decides <i>when and where</i> to bet; the 137 ladder decides <i>how much</i>. Follow it mechanically:</p>
+          <ol>
+          <li><b>Set up.</b> Choose a base unit your bankroll can survive losing 126 of. Record every result on the bead plate from the start of the shoe.</li>
+          <li><b>Build the triplet.</b> Group results into consecutive triplets (ignore ties for grouping — they don't form beads in this road).</li>
+          <li><b>Read the pattern.</b> When a triplet completes, classify it (streak / chop / formal / reverse) and name the result its pattern implies next.</li>
+          <li><b>Counter-bet one hand.</b> Bet the <i>opposite</i> of the implied result, at your current ladder level. This is the only bet the triplet produces.</li>
+          <li><b>Move the ladder.</b> Win → back to level 1 (1 unit). Lose → climb one level. Tie → level unchanged, and the hand doesn't count as your counter-bet result for the triplet — wait for the next completed triplet.</li>
+          <li><b>Start the next triplet.</b> The counter-bet hand becomes bead #1 of the next triplet. Repeat from step 3.</li>
+          <li><b>Respect the bust.</b> If you lose at level 6, the sequence is over and 126 units are gone. Do not start a second ladder to "win it back" — that converts a defined loss into an open-ended one.</li>
+          </ol>
+          <h4>Worked example</h4>
+          <p>Shoe opens B, B, P — a "formal" triplet. Its pattern implies Banker next (a switch back after the pair), so you counter-bet <b>Player</b>, 1 unit. Player wins → profit 1 unit, ladder resets, and that Player result opens the next triplet. Two hands later the triplet completes P, P, B (another "formal"); its pattern implies Player next, so you counter-bet <b>Banker</b>. Banker wins with commission → +0.95 units. And so on — one decision, one bet, every three results.</p>
+          <p>Try it directly: in the simulator, choose <i>Three-bead road counter-bet</i> + <i>137 six-level ladder</i> and run a batch of 200 shoes to see the real distribution of outcomes.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> this play is best described by its own traditional framing: it's gambling on luck — win big, lose big. The selection half adds patience; the ladder half adds leverage; neither adds expectancy. Treat the 126-unit bust as the price of the ride, sized so that paying it hurts but never wounds.</div>`,
+          zh: `<div class="kicker">步驟教學</div><h3>招牌打法：三珠路反打一口 + 137 纜法</h3>
+          <p>這套打法把前面兩個分頁的系統合成一個完整方法：三珠路決定「何時押、押哪邊」；137 纜法決定「押多少」。請機械化地照步驟執行：</p>
+          <ol>
+          <li><b>準備。</b>選一個你的資金能承受輸掉 126 個的基本單位。從牌靴開始就在珠盤路上記錄每個結果。</li>
+          <li><b>組成三連珠。</b>把結果每三個分成一組（和局不計入分組——它在這條路上不成珠）。</li>
+          <li><b>讀路型。</b>一組三連珠完成後，分類它屬於連式、跳式、正式或反式，並說出它暗示的下一個結果。</li>
+          <li><b>反打一口。</b>押暗示結果的<i>相反</i>邊，注碼用你目前的纜法層級。這是這組三連珠唯一產生的一注。</li>
+          <li><b>移動層級。</b>贏 → 回到第 1 層（1 單位）。輸 → 升一層。和 → 層級不變，而且這一局不算反打的結果，等下一組三連珠完成再下注。</li>
+          <li><b>開始下一組。</b>反打的那一局成為下一組三連珠的第一顆珠，回到步驟 3 重複。</li>
+          <li><b>尊重斷纜。</b>若在第 6 層輸掉，這一串結束，126 個單位就此損失。不要再開第二條纜去「追回來」——那會把一筆有定義的損失變成無上限的損失。</li>
+          </ol>
+          <h4>範例</h4>
+          <p>牌靴開出莊、莊、閒——「正式」三連珠。其路型暗示下一局回到莊（成對之後轉回去），於是你反打押<b>閒</b>，1 單位。閒贏 → 獲利 1 單位，纜法重置，而這個閒的結果開啟下一組三連珠。兩局後三連珠完成閒、閒、莊（同為正式），路型暗示下一局是閒，於是你反打押<b>莊</b>。莊贏扣佣後 +0.95 單位。依此類推——每三個結果，一次決策、一口注。</p>
+          <p>直接試玩：在模擬器中選擇「三珠路反打一口」+「137 六層纜法」，批量跑 200 靴，看真實的結果分布。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>這套打法最貼切的形容就是它傳統上的定位：賭的是運氣——贏得多、輸得也多。選注那一半給你耐心；纜法那一半給你槓桿；兩者都不給你期望值。把 126 單位的斷纜當作這趟旅程的票價，把單位大小定在「付了會痛、但不會受傷」的程度。</div>`
+        },
+        {
+          id: "paroli", title: { en: "Paroli", zh: "帕羅利勝進法" },
+          en: `<div class="kicker">Progression</div><h3>Paroli — the Win-Chase Classic （勝進法）</h3>
+          <p>Paroli is Martingale turned upside down: a <b>positive</b> progression that presses wins instead of chasing losses.</p>
+          <ul>
+          <li>Bet 1 unit. <b>Win → double the next bet</b> (1 → 2 → 4).</li>
+          <li><b>After three consecutive wins, bank the profit and reset to 1 unit.</b> A full winning cycle turns 1 unit of risk into 7 units of profit.</li>
+          <li><b>Any loss → reset to 1 unit.</b> Your maximum loss on any single sequence is the one unit you started with (plus the winnings you're pressing, which were never yours until banked).</li>
+          <li>Ties hold the stake and the count.</li>
+          </ul>
+          <p>Paroli suits baccarat's streaky texture: it bets small into chop and big into streaks, which is exactly how the shoe feels like it "wants" to be played.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> same expected value as flat betting, reshaped: many small 1-unit losses, occasional 7-unit wins. Whether that shape suits you is a temperament question, not a math advantage. Be honest about the "house money" feeling — pressed winnings are real money the moment they're on the felt.</div>`,
+          zh: `<div class="kicker">纜法</div><h3>帕羅利——經典勝進法</h3>
+          <p>帕羅利是直纜的鏡像：它是<b>正進</b>纜法，加注追的是贏勢，不是輸局。</p>
+          <ul>
+          <li>下注 1 單位。<b>贏 → 下一注加倍</b>（1 → 2 → 4）。</li>
+          <li><b>連贏三局後，把利潤收起來，回到 1 單位。</b>一個完整獲勝循環，用 1 單位的風險換 7 單位利潤。</li>
+          <li><b>任何一局輸 → 回到 1 單位。</b>任何一串的最大損失就是起始的那 1 單位（加上你正在加注的贏金——在收起來之前，那些嚴格來說還不算你的）。</li>
+          <li>和局維持注碼與計數。</li>
+          </ul>
+          <p>帕羅利很合百家樂「一陣一陣」的質地：在亂局時押小、在連贏時押大，正是牌靴「感覺上」想被打的方式。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>期望值與平注相同，只是形狀不同：許多 1 單位的小輸，偶爾一次 7 單位的大贏。這個形狀合不合你，是性格問題，不是數學優勢。對「用贏來的錢玩」這種感覺要誠實——加注中的贏金一旦押上桌，就是真錢。</div>`
+        },
+        {
+          id: "fibonacci", title: { en: "Fibonacci Win-Chase", zh: "五注斐氏勝追纜" },
+          en: `<div class="kicker">Progression</div><h3>Five-Bet Fibonacci Win-Chase （五注斐氏勝追纜）</h3>
+          <p>A positive progression built on the golden-ratio sequence. The five bet sizes are the first five Fibonacci numbers, in units:</p>
+          <div class="statgrid"><span class="sg">Bet 1: <b>1</b></span><span class="sg">Bet 2: <b>1</b></span><span class="sg">Bet 3: <b>2</b></span><span class="sg">Bet 4: <b>3</b></span><span class="sg">Bet 5: <b>5</b></span></div>
+          <ul>
+          <li>This is a <b>win-chase</b> （勝追）: <b>each win climbs one step</b> up the sequence; <b>any loss returns you to bet 1</b>.</li>
+          <li>Win all five steps in a row and the cycle pays 1+1+2+3+5 = <b>12 units</b> of profit, risking mostly the sequence's own winnings. Then restart the cycle.</li>
+          <li>Ties hold your position in the sequence.</li>
+          </ul>
+          <p>The gentle early steps (1, 1, 2) keep the cost of false starts low, while the 3 and 5 steps arrive only when a genuine streak is already paying you.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> an elegant staking shape with the same expected value as every other progression. The Fibonacci branding is decoration — the shoe does not know the golden ratio. What the system really does is pre-commit you to pressing streaks in fixed, survivable increments, which many players find easier to follow than improvising.</div>`,
+          zh: `<div class="kicker">纜法</div><h3>五注斐氏勝追纜（黃金分割）</h3>
+          <p>一套建立在黃金分割數列上的正進纜法。五口注碼是費波那契數列的前五個數字（單位）：</p>
+          <div class="statgrid"><span class="sg">第 1 注：<b>1</b></span><span class="sg">第 2 注：<b>1</b></span><span class="sg">第 3 注：<b>2</b></span><span class="sg">第 4 注：<b>3</b></span><span class="sg">第 5 注：<b>5</b></span></div>
+          <ul>
+          <li>這是<b>勝追</b>纜：<b>每贏一局就沿數列上一階</b>；<b>輸任何一局就回到第 1 注</b>。</li>
+          <li>五階連贏，整個循環獲利 1+1+2+3+5 = <b>12 單位</b>，而冒險的大多是數列自己贏來的錢。然後重新開始循環。</li>
+          <li>和局維持你在數列中的位置。</li>
+          </ul>
+          <p>前段溫和的階梯（1、1、2）讓假啟動的成本很低；3 與 5 這兩階，只有在真正的連贏已經在付你錢時才會到達。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>優雅的注碼形狀，期望值與其他任何纜法相同。費波那契的名號只是裝飾——牌靴不懂黃金分割。這套系統真正做的是讓你事先承諾用固定、能承受的幅度去追連贏，許多玩家覺得這比臨場即興容易遵守。</div>`
+        },
+        {
+          id: "staircase", title: { en: "Staircase", zh: "樓梯纜" },
+          en: `<div class="kicker">Progression</div><h3>The Staircase （樓梯纜）</h3>
+          <p>The mildest of the loss-chases. Your stake is a step number, starting at 1 unit:</p>
+          <ul>
+          <li><b>Loss → climb one step</b> (bet one more unit next hand).</li>
+          <li><b>Win → descend one step</b> (bet one fewer unit, never below 1).</li>
+          <li>Ties hold the step.</li>
+          </ul>
+          <p>Instead of doubling, the staircase moves in single units — a long losing run raises your bets slowly (after 8 losses you're betting 9 units, versus Martingale's 128), and a winning run gently lowers them again. It's the progression for players who want <i>some</i> loss-recovery pressure without exponential stakes.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> the slow slope cuts both ways: it never recovers losses as decisively as it falls behind, so deep holes become long, grinding partial recoveries. Expected value: unchanged, as always. Its real function is pacing — it meters how fast a bad shoe can hurt you.</div>`,
+          zh: `<div class="kicker">纜法</div><h3>樓梯纜</h3>
+          <p>最溫和的負追纜法。你的注碼是一個「階梯層數」，從 1 單位開始：</p>
+          <ul>
+          <li><b>輸 → 上升一階</b>（下一局多押一個單位）。</li>
+          <li><b>贏 → 下降一階</b>（下一局少押一個單位，最低不低於 1）。</li>
+          <li>和局維持層數。</li>
+          </ul>
+          <p>樓梯纜不加倍，而是以單一單位移動——長連敗只會慢慢墊高注碼（連輸 8 局後押 9 單位，直纜則是 128），連贏時再慢慢降回來。這是給想要「一點」追回壓力、又不要指數型注碼的玩家的纜法。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>緩坡是雙面刃：它追回虧損的速度永遠趕不上落後的速度，所以深洞會變成長時間的磨損式部分追回。期望值：一如既往，不變。它真正的功能是控速——控制一靴壞牌傷害你的速度。</div>`
+        },
+        {
+          id: "verdicts", title: { en: "The Honest Verdicts", zh: "誠實結論" },
+          en: `<div class="kicker">Read this tab twice</div><h3>The Honest Verdicts</h3>
+          <p>Everything on this page is worth understanding — and none of it should be oversold. Three verdicts matter most:</p>
+          <h4>1. Progression profits are real short-term — and not replicable long-term</h4>
+          <p>Loss-chasing ladders genuinely do produce winning sessions most of the time; that's arithmetic, not marketing. But the same arithmetic guarantees the bust that erases them, and across enough shoes the busts always collect what they're owed. A system that wins 9 sessions out of 10 and loses 11 sessions' profit in the 10th is not a profit system — it's a loan from probability.</p>
+          <h4>2. Every loss-chase has the same fatal flaw</h4>
+          <p>The recovery plan assumes a win arrives before the ladder, the table limit, or your bankroll runs out. Nothing enforces that assumption. The flaw isn't bad luck — it's structural: you're betting the largest amounts precisely when you've been losing, with money that matters most, on hands whose odds never changed.</p>
+          <h4>3. Betting fewer hands is not safer</h4>
+          <p>Playing selectively <i>feels</i> lower-risk, and per hour it does reduce your expected loss (less action × same edge). But per hand, nothing improves — and selective systems that "wait for the right spot" often concentrate the same total risk into fewer, larger, progression-inflated bets. Fewer hands at bigger stakes can be riskier than more hands at small stakes, even with identical expected loss.</p>
+          <h4>The numbers that never move</h4>
+          <table class="data"><tr><th>Bet</th><th class="num">House edge</th></tr>
+          <tr><td>Banker</td><td class="num">1.06%</td></tr>
+          <tr><td>Player</td><td class="num">1.24%</td></tr>
+          <tr><td>Tie (8:1)</td><td class="num">14.36%</td></tr></table>
+          <p>No selection method, progression, road-reading, or virtual signal changes these figures by a single basis point. What systems <i>can</i> legitimately do: structure your session, pace your action, cap your decisions, and make the entertainment budget last. Used that way — with eyes open — they're tools. Sold as income, they're a story.</p>`,
+          zh: `<div class="kicker">這一頁請看兩次</div><h3>誠實結論</h3>
+          <p>這一頁的每個系統都值得理解——但沒有一個應該被過度吹捧。最重要的三個結論：</p>
+          <h4>1. 纜法的短期獲利是真的——但長期無法複製</h4>
+          <p>負追纜法確實在大多數場次會贏，這是算術，不是行銷話術。但同一套算術也保證了那次會把獲利全數抹掉的斷纜；而打得夠多靴，斷纜總會來收它應得的。一個 10 場贏 9 場、卻在第 10 場輸掉 11 場利潤的系統，不是獲利系統——那是向機率借的貸款。</p>
+          <h4>2. 每套負追纜都有同一個致命傷</h4>
+          <p>追回計畫假設在纜斷、桌限或資金耗盡之前，一定會贏一局。沒有任何力量保證這個假設成立。這個缺陷不是運氣不好，而是結構性的：你正是在連敗的時候、用最輸不起的錢、下最大的注，而每一局的機率從未改變。</p>
+          <h4>3. 少下注不代表比較安全</h4>
+          <p>選擇性下注「感覺」風險較低，以每小時計算，預期虧損確實會減少（總投注額 × 相同優勢）。但以每局計算，什麼都沒改善——而且「等對的時機」的選擇性系統，常把相同的總風險集中到更少、更大、被纜法膨脹的注上。少數幾注大注，可能比多注小注更危險，即使預期虧損相同。</p>
+          <h4>永遠不變的數字</h4>
+          <table class="data"><tr><th>注別</th><th class="num">莊家優勢</th></tr>
+          <tr><td>莊</td><td class="num">1.06%</td></tr>
+          <tr><td>閒</td><td class="num">1.24%</td></tr>
+          <tr><td>和（8:1）</td><td class="num">14.36%</td></tr></table>
+          <p>沒有任何選注法、纜法、讀路或虛擬訊號能讓這些數字動搖一個基點。系統能正當做到的事情是：讓你的場次有結構、控制下注節奏、限制決策次數、讓娛樂預算撐得更久。用這種心態——睜大眼睛——它們是工具；若被包裝成收入來源，它們只是故事。</p>`
+        }
+      ];
+
+      /* ================= Side Bets tabs ================= */
+      var SIDE_TABS = [
+        {
+          id: "dragon7", title: { en: "Dragon 7", zh: "龍七 Dragon 7" },
+          en: `<div class="kicker">EZ Baccarat side bet</div><h3>Dragon 7 — the one that works</h3>
+          <p>On EZ Baccarat tables (where Banker wins pay no commission, except a Banker 3-card 7 pushes the Banker bet), the <b>Dragon 7</b> side bet pays <b>40:1</b> when Banker wins with a three-card total of 7.</p>
+          <div class="statgrid"><span class="sg">Payout: <b>40:1</b></span><span class="sg">House edge: <b>7.61%</b></span><span class="sg">Trigger — true count: <b>≥ +4</b></span></div>
+          <h4>The count (Eliot Jacobson's published system)</h4>
+          <table class="data"><tr><th>Card</th><th class="num">Count value</th><th>Why</th></tr>
+          <tr><td>8, 9</td><td class="num plus">+2</td><td>Removing 8s/9s kills naturals, so more Banker hands draw a third card — and three-card 7s multiply</td></tr>
+          <tr><td>4, 5, 6, 7</td><td class="num minus">−1</td><td>Removing these makes three-card 7s harder to build</td></tr>
+          <tr><td>A, 2, 3, 10/J/Q/K</td><td class="num">0</td><td>Ignore</td></tr></table>
+          <p>Keep the running count as cards are dealt; divide by the number of decks remaining for the <b>true count</b>. When the true count reaches <b>+4</b>, the bet turns positive-expectation and you fire.</p>
+          <h4>What it's worth</h4>
+          <p>Published simulations put the profit at roughly <b>$50–60 per shoe on $100 bets</b>, with about <b>5–7 betting spots per shoe</b>. That is a genuine, mathematically real edge — the only one on this page that clears the bar of "practically attackable." Practice the count in the Simulator tab, which has a dedicated Dragon 7 training mode.</p>
+          <div class="verdict"><b class="tag">The fine print:</b> you need deep shoe penetration, ideally heads-up play (other players eat your spots and slow the game), hundreds of hours for the long run to show up, and a stomach for variance: simulations show roughly a <b>24% chance of still being down after 500 shoes</b> — with the edge. Real, yes. Easy money, no.</div>`,
+          zh: `<div class="kicker">EZ 百家樂邊注</div><h3>龍七——唯一真的能打的邊注</h3>
+          <p>在 EZ 百家樂牌桌上（莊贏不抽佣，但莊以三張牌 7 點獲勝時莊注退回），<b>龍七</b>邊注在莊以三張牌合計 7 點獲勝時賠 <b>40:1</b>。</p>
+          <div class="statgrid"><span class="sg">賠率：<b>40:1</b></span><span class="sg">莊家優勢：<b>7.61%</b></span><span class="sg">進場真數：<b>≥ +4</b></span></div>
+          <h4>算牌法（Eliot Jacobson 公開發表的系統）</h4>
+          <table class="data"><tr><th>牌</th><th class="num">計數值</th><th>原因</th></tr>
+          <tr><td>8、9</td><td class="num plus">+2</td><td>8 與 9 減少會讓例牌變少，更多莊家手牌需要補第三張牌——三張 7 點的機會大增</td></tr>
+          <tr><td>4、5、6、7</td><td class="num minus">−1</td><td>這些牌減少，三張湊 7 點就更難</td></tr>
+          <tr><td>A、2、3、10/J/Q/K</td><td class="num">0</td><td>忽略</td></tr></table>
+          <p>牌發出時持續累計流水計數；再除以剩餘副數得到<b>真數</b>。真數達到 <b>+4</b> 時，這個注轉為正期望，可以進場。</p>
+          <h4>實際價值</h4>
+          <p>公開發表的模擬顯示，以每注 $100 計算，每靴利潤約 <b>$50–60</b>，每靴約有 <b>5–7 次</b>下注機會。這是真正、數學上成立的優勢——本頁唯一達到「實務上可攻擊」標準的邊注。你可以在「模擬器」分頁用專門的龍七訓練模式練習算牌。</p>
+          <div class="verdict"><b class="tag">但書：</b>你需要牌靴切得很深、最好單挑（其他玩家會吃掉你的機會並拖慢速度）、數百小時才能讓長期結果浮現，還要能承受波動：模擬顯示，即使握有優勢，打完 500 靴後仍有約 <b>24% 的機率是虧損的</b>。是真的，但絕不是輕鬆錢。</div>`
+        },
+        {
+          id: "panda8", title: { en: "Panda 8", zh: "熊貓八 Panda 8" },
+          en: `<div class="kicker">EZ Baccarat side bet</div><h3>Panda 8 — countable, but weaker</h3>
+          <p>The mirror image of Dragon 7, on the Player side: <b>Panda 8</b> pays <b>25:1</b> when Player wins with a three-card total of 8.</p>
+          <div class="statgrid"><span class="sg">Payout: <b>25:1</b></span><span class="sg">House edge: <b>10.19%</b></span><span class="sg">Trigger — true count: <b>≥ +11</b></span></div>
+          <h4>The count</h4>
+          <table class="data"><tr><th>Card</th><th class="num">Count value</th></tr>
+          <tr><td>A, 2</td><td class="num plus">+1</td></tr>
+          <tr><td>3, 4, 5</td><td class="num minus">−2</td></tr>
+          <tr><td>6, 7</td><td class="num minus">−1</td></tr>
+          <tr><td>8</td><td class="num minus">−2</td></tr>
+          <tr><td>9</td><td class="num plus">+4</td></tr>
+          <tr><td>10/J/Q/K</td><td class="num plus">+1</td></tr></table>
+          <p>The count is harder to run than Dragon 7's — six different values instead of three — and the trigger (+11) is demanding, which is why spots are rarer: about <b>3.8 bets per shoe</b>.</p>
+          <h4>What it's worth</h4>
+          <p>Simulations show roughly <b>22% of one unit of profit per shoe</b> — about <b>40% as profitable as Dragon 7</b> for a harder count and a bigger base edge to dig out of.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> if you're choosing one side bet to count, it's Dragon 7. Panda 8 is the same skill spent on a worse payout structure. Counting both at once is a party trick, not a plan.</div>`,
+          zh: `<div class="kicker">EZ 百家樂邊注</div><h3>熊貓八——可以算，但比較弱</h3>
+          <p>龍七在閒家那一側的鏡像：<b>熊貓八</b>在閒以三張牌合計 8 點獲勝時賠 <b>25:1</b>。</p>
+          <div class="statgrid"><span class="sg">賠率：<b>25:1</b></span><span class="sg">莊家優勢：<b>10.19%</b></span><span class="sg">進場真數：<b>≥ +11</b></span></div>
+          <h4>算牌法</h4>
+          <table class="data"><tr><th>牌</th><th class="num">計數值</th></tr>
+          <tr><td>A、2</td><td class="num plus">+1</td></tr>
+          <tr><td>3、4、5</td><td class="num minus">−2</td></tr>
+          <tr><td>6、7</td><td class="num minus">−1</td></tr>
+          <tr><td>8</td><td class="num minus">−2</td></tr>
+          <tr><td>9</td><td class="num plus">+4</td></tr>
+          <tr><td>10/J/Q/K</td><td class="num plus">+1</td></tr></table>
+          <p>這個計數比龍七難跑——六種數值而不是三種——而進場點（+11）要求很高，機會自然較少：每靴約 <b>3.8 次</b>下注。</p>
+          <h4>實際價值</h4>
+          <p>模擬顯示每靴利潤約為<b>一個單位的 22%</b>——計數更難、要挖的基礎優勢更大，獲利卻只有龍七的約 <b>40%</b>。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>如果只選一個邊注來算，選龍七。熊貓八是把同樣的功夫花在較差的賠付結構上。兩個同時算，那是雜耍，不是計畫。</div>`
+        },
+        {
+          id: "pairs", title: { en: "Pair Bets", zh: "對子" },
+          en: `<div class="kicker">Side bet</div><h3>Banker / Player Pair — 11:1</h3>
+          <p>The Pair bets pay <b>11:1</b> when the first two cards dealt to Banker (or Player, depending on which you bet) form a pair.</p>
+          <div class="statgrid"><span class="sg">Payout: <b>11:1</b></span><span class="sg">Hit rate: <b>7.47%</b></span><span class="sg">House edge: <b>10.36%</b></span></div>
+          <p>Is it countable? In principle, yes — a shoe unusually rich in matched ranks is richer in pairs. In practice, a perfect attack requires tracking <b>thirteen separate rank counts</b> and comparing the density of every rank against every other, hand by hand, in real time. The profitable spots that survive that analysis are few and far between.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> a math curiosity. The counting effort is enormous, the edge moments are rare, and the return per hour doesn't repay either. Enjoy it as a fun sweat if you like; don't build a system on it.</div>`,
+          zh: `<div class="kicker">邊注</div><h3>莊對 / 閒對——11:1</h3>
+          <p>對子邊注在莊（或閒，依你押的那邊）最初兩張牌成對時賠 <b>11:1</b>。</p>
+          <div class="statgrid"><span class="sg">賠率：<b>11:1</b></span><span class="sg">命中率：<b>7.47%</b></span><span class="sg">莊家優勢：<b>10.36%</b></span></div>
+          <p>可以算嗎？原則上可以——某個點數特別濃的牌靴，對子自然比較多。但實務上，完美的攻擊需要同時追蹤<b>十三個點數各自的計數</b>，還要即時把每個點數的密度跟其他所有點數比較。經過這番分析後還站得住的獲利機會，少之又少。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>數學上的奇珍異品。算牌的功夫驚人、有優勢的時刻稀少、每小時回報兩頭都不償。當作好玩的刺激可以；拿它來建系統，不必了。</div>`
+        },
+        {
+          id: "tie", title: { en: "Tie Bet", zh: "和局" },
+          en: `<div class="kicker">Main-felt bet</div><h3>The Tie Bet — 8:1, and effectively uncountable</h3>
+          <p>The Tie bet pays <b>8:1</b> when Banker and Player tie. It is the worst bet on the main felt:</p>
+          <div class="statgrid"><span class="sg">Payout: <b>8:1</b></span><span class="sg">House edge: <b>14.36%</b></span></div>
+          <p>Because ties depend on the balance of <i>all</i> ranks, counters have tried. The most famous attempt is John May's odd-card count: +1 for every odd-valued card dealt, bet the Tie only at very high counts (160+), for a claimed edge on those rare bets. The catch is the trigger: it fires roughly <b>once per 10,000 hands</b> — about 125 hours of play between bets. Even perfect-count computer simulations at deep penetration show profits on the order of pocket change per hundred bets.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> effectively uncountable. A system that bets once a week isn't a system; it's a screensaver. The 14.36% edge is a wall, not a puzzle.</div>`,
+          zh: `<div class="kicker">主檯注別</div><h3>和局注——8:1，實質上無法算牌</h3>
+          <p>和局注在莊閒同點時賠 <b>8:1</b>，是主檯面上最差的注：</p>
+          <div class="statgrid"><span class="sg">賠率：<b>8:1</b></span><span class="sg">莊家優勢：<b>14.36%</b></span></div>
+          <p>因為和局取決於<i>所有</i>點數的平衡，算牌者還是試過。最有名的是 John May 的奇數牌計數：每發出一張奇數點牌 +1，只有在計數非常高（160 以上）時才押和，宣稱在那些罕見的下注上握有優勢。問題在進場點：大約<b>每一萬局才觸發一次</b>——約 125 小時的牌局才下一次注。就連用完美計數的電腦模擬、在切牌很深的條件下，每百注的利潤也只有零錢等級。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>實質上不可算。一週才下一注的系統不是系統，是螢幕保護程式。14.36% 的優勢是一堵牆，不是一道謎題。</div>`
+        },
+        {
+          id: "tigertie", title: { en: "Tiger Tie", zh: "虎和 Tiger Tie" },
+          en: `<div class="kicker">Side bet</div><h3>Tiger Tie — 45:1</h3>
+          <p><b>Tiger Tie</b> is the Tie bet's bigger-paying cousin (found on Fortune / Tiger baccarat variants): it pays <b>45:1</b> when the hand ties with both sides holding the same multi-card total pattern specified by the table — most commonly a tie where both Banker and Player hold three-card totals.</p>
+          <p>Because a Tiger Tie is a subset of all ties, any attack on it runs through the same principle as Tie counting: track the card balance and strike only in freakishly tie-rich shoes. The payout is bigger; the frequency is far lower; the base edge is comparable to the ordinary Tie's.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> no practical published counting system exists for Tiger Tie, and the Tie-counting math on the previous tab explains why none is likely to: the trigger spots are vanishingly rare relative to the effort. A lottery ticket with extra steps.</div>`,
+          zh: `<div class="kicker">邊注</div><h3>虎和——45:1</h3>
+          <p><b>虎和</b>是和局注賠得更大的親戚（見於 Fortune / Tiger 系列百家樂）：當和局且雙方牌型符合檯面規定的特定多張牌同點型態——最常見是莊閒雙方都以三張牌成和——賠 <b>45:1</b>。</p>
+          <p>因為虎和是所有和局的子集合，任何攻擊方法都得走和局算牌的同一條路：追蹤牌的平衡，只在和局濃度異常高的牌靴出手。賠率比較大；頻率低得多；基礎優勢與普通和局注相近。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>虎和沒有實務上可用的公開算牌系統，而前一個分頁和局算牌的數學正好解釋了為什麼大概也不會有：以所需的功夫而言，進場時機稀有到幾乎不存在。是加了步驟的彩券。</div>`
+        },
+        {
+          id: "maingame", title: { en: "Counting the Main Game", zh: "主遊戲算牌" },
+          en: `<div class="kicker">Banker / Player</div><h3>Counting Banker vs Player — a dead end</h3>
+          <p>New counters always ask: if card counting works in blackjack, why not count the main baccarat bets? The answer was settled decades ago by Peter Griffin's analysis: baccarat cards are simply too weak. Removing any single card shifts the Banker/Player odds by a tiny fraction of what it does in blackjack, because the drawing rules wash out most of the information.</p>
+          <p>Even with a <b>perfect count, deep penetration, and flawless play</b>, the theoretical win rate works out to roughly <b>70 cents per hour betting $1,000 a hand</b>. Real conditions — shallower cuts, table limits on the rare +EV moments, human counting errors — push it below zero.</p>
+          <div class="verdict"><b class="tag">Honest verdict:</b> dead, and long buried. This is precisely why serious counters moved to the side bets: Dragon 7's payout depends on a specific card pattern strongly enough for counting to matter. In the main game, it doesn't.</div>`,
+          zh: `<div class="kicker">莊 / 閒</div><h3>算莊閒——死路一條</h3>
+          <p>新手算牌者總會問：算牌在 21 點有用，為什麼不能算百家樂的主注？答案幾十年前就被 Peter Griffin 的分析定讞了：百家樂的牌效太弱。移除任何一張牌，對莊閒賠率的影響只有 21 點裡的一個零頭，因為補牌規則把大部分資訊都沖淡了。</p>
+          <p>即使在<b>完美算牌、切牌極深、零失誤</b>的條件下，理論時薪也只有在每注 $1,000 時約 <b>70 美分</b>。現實條件——切牌較淺、罕見正期望時刻的桌限、人為算錯——會把它推到零以下。</p>
+          <div class="verdict"><b class="tag">誠實評價：</b>死了，而且埋很久了。這正是認真的算牌者轉向邊注的原因：龍七的賠付夠集中地取決於特定牌型，算牌才有意義。主遊戲裡，沒有。</div>`
+        },
+        {
+          id: "bottomline", title: { en: "Bottom Line & Sources", zh: "結論與來源" },
+          en: `<div class="kicker">Summary</div><h3>The Bottom Line</h3>
+          <table class="data"><tr><th>Bet</th><th class="num">Pays</th><th class="num">House edge</th><th>Countable?</th></tr>
+          <tr><td>Dragon 7</td><td class="num">40:1</td><td class="num">7.61%</td><td><b>Yes — the only practical one</b></td></tr>
+          <tr><td>Panda 8</td><td class="num">25:1</td><td class="num">10.19%</td><td>Yes, but ~40% as profitable</td></tr>
+          <tr><td>Banker / Player Pair</td><td class="num">11:1</td><td class="num">10.36%</td><td>In theory — 13 rank counts, not practical</td></tr>
+          <tr><td>Tie</td><td class="num">8:1</td><td class="num">14.36%</td><td>No — trigger ≈ once per 10,000 hands</td></tr>
+          <tr><td>Tiger Tie</td><td class="num">45:1</td><td class="num">~Tie-level</td><td>No practical published system</td></tr>
+          <tr><td>Banker / Player (main game)</td><td class="num">~1:1</td><td class="num">1.06% / 1.24%</td><td>No — ≈ $0.70/hr at $1,000 bets</td></tr></table>
+          <p><b>Dragon 7 is the only practically attackable side bet in baccarat</b> — and even it demands deep penetration, heads-up play, hundreds of hours, and high variance tolerance: roughly a 24% chance of being down after 500 shoes <i>with</i> the edge working for you. Everything else on this page is a math curiosity or a lottery ticket.</p>
+          <p>The constructive takeaway: if you enjoy the counting craft, Dragon 7 practice (in the Simulator) is a genuinely learnable skill with real, if modest, expected value. Everything else, enjoy as entertainment and price it that way.</p>
+          <h4>Sources & further reading</h4>
+          <ul class="sources">
+          <li>Wizard of Odds — Baccarat Appendix 2 (side bets & EZ Baccarat): <a href="http://wizardofodds.com/games/baccarat/baccaratapx2.html" target="_blank" rel="noopener">wizardofodds.com/games/baccarat/baccaratapx2.html</a></li>
+          <li>Wizard of Odds — Card Counting the Dragon Bet: <a href="http://wizardofodds.com/baccarat/card-counting-dragon-bet.html" target="_blank" rel="noopener">wizardofodds.com/baccarat/card-counting-dragon-bet.html</a></li>
+          <li>Wizard of Odds — Baccarat Appendix 5 (card counting): <a href="https://wizardofodds.com/baccarat/baccaratapx5.html" target="_blank" rel="noopener">wizardofodds.com/baccarat/baccaratapx5.html</a></li>
+          <li>Discount Gambling — baccarat card counting: <a href="http://discountgambling.net/page/7/" target="_blank" rel="noopener">discountgambling.net/page/7/</a></li>
+          <li>Casino.zone — Advanced Card Counting in Live Baccarat: <a href="https://casino.zone/advanced-card-counting-live-baccarat" target="_blank" rel="noopener">casino.zone/advanced-card-counting-live-baccarat</a></li>
+          <li>Casino.org — Baccarat Side Bets: <a href="http://casino.org/blog/baccarat-side-bets/" target="_blank" rel="noopener">casino.org/blog/baccarat-side-bets/</a></li>
+          </ul>`,
+          zh: `<div class="kicker">總結</div><h3>結論</h3>
+          <table class="data"><tr><th>注別</th><th class="num">賠率</th><th class="num">莊家優勢</th><th>可算牌？</th></tr>
+          <tr><td>龍七</td><td class="num">40:1</td><td class="num">7.61%</td><td><b>可以——唯一實務可行的</b></td></tr>
+          <tr><td>熊貓八</td><td class="num">25:1</td><td class="num">10.19%</td><td>可以，但獲利只有約 40%</td></tr>
+          <tr><td>莊對 / 閒對</td><td class="num">11:1</td><td class="num">10.36%</td><td>理論上可以——需 13 組點數計數，不實用</td></tr>
+          <tr><td>和局</td><td class="num">8:1</td><td class="num">14.36%</td><td>不行——約一萬局才觸發一次</td></tr>
+          <tr><td>虎和</td><td class="num">45:1</td><td class="num">約和局等級</td><td>無實務可用的公開系統</td></tr>
+          <tr><td>莊 / 閒（主遊戲）</td><td class="num">約 1:1</td><td class="num">1.06% / 1.24%</td><td>不行——每注 $1,000 時約 $0.70/小時</td></tr></table>
+          <p><b>龍七是百家樂唯一實務上可攻擊的邊注</b>——即便如此，也需要切牌夠深、單挑對局、數百小時投入與高度的波動承受力：就算優勢站在你這邊，打完 500 靴後仍有約 24% 的機率是虧損的。本頁其他注別，都是數學奇珍或彩券。</p>
+          <p>建設性的結論：如果你享受算牌這門手藝，龍七練習（在模擬器裡）是真正學得會、且帶有真實（雖不高）的期望值的技能。其他的，就當娛樂，並用娛樂的價格看待。</p>
+          <h4>來源與延伸閱讀</h4>
+          <ul class="sources">
+          <li>Wizard of Odds——百家樂附錄 2（邊注與 EZ 百家樂）：<a href="http://wizardofodds.com/games/baccarat/baccaratapx2.html" target="_blank" rel="noopener">wizardofodds.com/games/baccarat/baccaratapx2.html</a></li>
+          <li>Wizard of Odds——龍七算牌：<a href="http://wizardofodds.com/baccarat/card-counting-dragon-bet.html" target="_blank" rel="noopener">wizardofodds.com/baccarat/card-counting-dragon-bet.html</a></li>
+          <li>Wizard of Odds——百家樂附錄 5（算牌）：<a href="https://wizardofodds.com/baccarat/baccaratapx5.html" target="_blank" rel="noopener">wizardofodds.com/baccarat/baccaratapx5.html</a></li>
+          <li>Discount Gambling——百家樂算牌：<a href="http://discountgambling.net/page/7/" target="_blank" rel="noopener">discountgambling.net/page/7/</a></li>
+          <li>Casino.zone——真人百家樂進階算牌：<a href="https://casino.zone/advanced-card-counting-live-baccarat" target="_blank" rel="noopener">casino.zone/advanced-card-counting-live-baccarat</a></li>
+          <li>Casino.org——百家樂邊注：<a href="http://casino.org/blog/baccarat-side-bets/" target="_blank" rel="noopener">casino.org/blog/baccarat-side-bets/</a></li>
+          </ul>`
+        }
+      ];
+
+      var ABOUT = {
+        en: `<p><b>Baccarat Lab</b> is a personal strategy resource built and maintained by <b>Tim Lin</b>, a baccarat enthusiast who plays mostly on cruise ships and in Las Vegas, and who got tired of strategy content that either sells miracles or skips the math.</p>
+        <p>Everything here follows one house rule: <b>show the mechanics, show the numbers, and say plainly what doesn't work.</b> The strategy guides present the systems players actually use — bet selection, progressions, road-reading — as educational material. The side-bet section covers the one corner of baccarat where card counting has real (if modest) mathematical support. The simulator exists so you never have to take anyone's word for any of it: run the systems yourself, over hundreds of shoes, and watch the distributions.</p>
+        <p>No credentials are claimed here beyond enthusiasm and homework. Baccarat's house edge — 1.06% on Banker, 1.24% on Player — does not care about either. Play for entertainment, size your bets to your means, and let the math on this site keep you honest.</p>
+        <p>Tim also writes about casino-comp cruising at <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a>.</p>`,
+        zh: `<p><b>Baccarat Lab</b> 是由 <b>Tim Lin</b> 建立與維護的個人策略資源。Tim 是一位百家樂愛好者，主要在郵輪上和拉斯維加斯打牌；他受夠了那些不是販賣奇蹟、就是跳過數學的策略內容。</p>
+        <p>本站只有一條家規：<b>把機制講清楚、把數字攤開來、把行不通的部分明講。</b>策略指南以教育為目的，介紹玩家真正在用的系統——選注法、纜法、讀路。邊注章節談的是百家樂唯一一個算牌有真實（雖 modest）數學支持的角落。模擬器的存在，是讓你不必相信任何人的話：自己跑這些系統，跑上幾百靴，親眼看結果分布。</p>
+        <p>本站不宣稱任何資歷，只有熱情和做過的功課。百家樂的莊家優勢——莊 1.06%、閒 1.24%——對兩者都一視同仁。請以娛樂為目的下注，注碼量力而為，讓本站的數學幫你保持誠實。</p>
+        <p>Tim 也在 <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a> 寫賭場回饋郵輪旅遊的內容。</p>`
+      };
+
+      /* ================= App: nav, language, tabs ================= */
+      function $(id) { return document.getElementById(id); }
+      var PAGES = [
+        { id: "home", key: "navHome" }, { id: "guide", key: "navGuide" },
+        { id: "sidebets", key: "navSide" }, { id: "sim", key: "navSim" }, { id: "about", key: "navAbout" }
+      ];
+      var curPage = "home", curGuideTab = "threebead", curSideTab = "dragon7";
+
+      function showPage(id) {
+        curPage = id;
+        PAGES.forEach(function (p) { $("page-" + p.id).classList.toggle("on", p.id === id); });
+        var nav = $("mainnav");
+        Array.prototype.forEach.call(nav.children, function (b) { b.classList.toggle("on", b.getAttribute("data-page") === id); });
+        if (id === "sim") { drawBrChart(); }
+        window.scrollTo(0, 0);
+      }
+      function buildNav() {
+        var nav = $("mainnav"); nav.innerHTML = "";
+        PAGES.forEach(function (p) {
+          var b = document.createElement("button"); b.type = "button";
+          b.textContent = t(p.key); b.setAttribute("data-page", p.id);
+          b.classList.toggle("on", p.id === curPage);
+          b.addEventListener("click", function () { showPage(p.id); });
+          nav.appendChild(b);
+        });
+      }
+      function buildTabs(tabs, barId, panelId, cur, setter) {
+        var bar = $(barId); bar.innerHTML = "";
+        tabs.forEach(function (tb) {
+          var b = document.createElement("button"); b.type = "button";
+          b.textContent = tb.title[LANG] || tb.title.en;
+          b.classList.toggle("on", tb.id === cur);
+          b.addEventListener("click", function () { setter(tb.id); });
+          bar.appendChild(b);
+        });
+        var active = null;
+        tabs.forEach(function (tb) { if (tb.id === cur) active = tb; });
+        if (!active) active = tabs[0];
+        $(panelId).innerHTML = active[LANG] || active.en;
+      }
+      function renderGuide() { buildTabs(GUIDE_TABS, "guide-tabs", "guide-panel", curGuideTab, function (id) { curGuideTab = id; renderGuide(); }); }
+      function renderSide() { buildTabs(SIDE_TABS, "side-tabs", "side-panel", curSideTab, function (id) { curSideTab = id; renderSide(); }); }
+
+      function applyLang() {
+        document.documentElement.lang = LANG === "zh" ? "zh-Hant" : "en";
+        $("lang-en").classList.toggle("on", LANG === "en");
+        $("lang-zh").classList.toggle("on", LANG === "zh");
+        Array.prototype.forEach.call(document.querySelectorAll("[data-i]"), function (el) {
+          var k = el.getAttribute("data-i"); if (I18N[LANG][k] || I18N.en[k]) el.innerHTML = t(k);
+        });
+        buildNav(); renderGuide(); renderSide();
+        $("about-body").innerHTML = ABOUT[LANG] || ABOUT.en;
+        $("mb-b").textContent = t("manualB"); $("mb-p").textContent = t("manualP");
+        $("manual-bets").classList.toggle("show", settings().method === "manual");
+        $("btn-deal").textContent = t("deal");
+        $("btn-play").textContent = playing ? t("pause") : t("play");
+        $("btn-newshoe").textContent = t("newShoe");
+        $("btn-reset").textContent = t("reset");
+        $("btn-batch").textContent = t("runBatch");
+        $("btn-guess").textContent = t("check");
+        $("btn-reveal").textContent = t("reveal");
+        renderAll();
+      }
+      $("lang-en").addEventListener("click", function () { LANG = "en"; applyLang(); });
+      $("lang-zh").addEventListener("click", function () { LANG = "zh"; applyLang(); });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-goto]"), function (b) {
+        b.addEventListener("click", function () { showPage(b.getAttribute("data-goto")); });
+      });
+
+      /* ================= Baccarat engine ================= */
+      function cardVal(r) { return r >= 10 ? 0 : r; }
+      function handVal(cards) { var s = 0; for (var i = 0; i < cards.length; i++) s += cardVal(cards[i].r); return s % 10; }
+      function buildShoeArray() {
+        var a = [], d, s, r, i, j, tmp;
+        for (d = 0; d < 8; d++) for (s = 0; s < 4; s++) for (r = 1; r <= 13; r++) a.push({ r: r, s: s });
+        for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); tmp = a[i]; a[i] = a[j]; a[j] = tmp; }
+        return a;
+      }
+      function dealFrom(arr, i) {
+        function dc() { return arr[i++]; }
+        var pc = [dc(), dc()], bc = [dc(), dc()];
+        var pv = handVal(pc), bv = handVal(bc), natural = pv >= 8 || bv >= 8, pt = null;
+        if (!natural) {
+          if (pv <= 5) {
+            pt = dc(); pc.push(pt); pv = handVal(pc);
+            var tv = cardVal(pt.r);
+            if (bv <= 2) bc.push(dc());
+            else if (bv === 3 && tv !== 8) bc.push(dc());
+            else if (bv === 4 && tv >= 2 && tv <= 7) bc.push(dc());
+            else if (bv === 5 && tv >= 4 && tv <= 7) bc.push(dc());
+            else if (bv === 6 && (tv === 6 || tv === 7)) bc.push(dc());
+            bv = handVal(bc);
+          } else if (bv <= 5) { bc.push(dc()); bv = handVal(bc); }
+        }
+        var res = pv > bv ? "P" : (bv > pv ? "B" : "T");
+        return {
+          hand: {
+            pc: pc, bc: bc, pv: pv, bv: bv, res: res, natural: natural,
+            pPair: pc[0].r === pc[1].r, bPair: bc[0].r === bc[1].r,
+            dragon: res === "B" && bc.length === 3 && bv === 7,
+            panda: res === "P" && pc.length === 3 && pv === 8
+          }, next: i
+        };
+      }
+      function d7Value(r) { if (r === 8 || r === 9) return 2; if (r >= 4 && r <= 7) return -1; return 0; }
+
+      /* ---------- roads ---------- */
+      function makeRoad() { return { cells: {}, last: null, colX: -1, maxX: 0 }; }
+      function roadAdd(road, color) {
+        var pos, x, y;
+        if (!road.last) { pos = { x: 0, y: 0 }; road.colX = 0; }
+        else if (color === road.last.color) {
+          x = road.last.x; y = road.last.y + 1;
+          if (y > 5 || road.cells[x + "," + y]) { y = road.last.y; x = road.last.x + 1; while (road.cells[x + "," + y]) x++; }
+          pos = { x: x, y: y };
+        } else {
+          x = road.colX + 1; while (road.cells[x + ",0"]) x++;
+          pos = { x: x, y: 0 }; road.colX = x;
+        }
+        road.cells[pos.x + "," + pos.y] = color;
+        if (pos.x > road.maxX) road.maxX = pos.x;
+        road.last = { x: pos.x, y: pos.y, color: color };
+        return pos;
+      }
+
+      /* ---------- selection / progression state ---------- */
+      function freshCtx() { return { lastNonTie: null, tb: { buf: [], pending: null, awaiting: false }, vp: [] }; }
+      function freshProg() { return { mult: 1, l137: 0, wins: 0, idx: 0, stair: 1 }; }
+      function followPick(ctx) { return ctx.lastNonTie || "B"; }
+      function vpPick(ctx) {
+        if (ctx.vp.length < 10) return null;
+        var last = ctx.vp.slice(-10), w = 0, i;
+        for (i = 0; i < last.length; i++) if (last[i] === "W") w++;
+        return w >= 6 ? "B" : null;
+      }
+      function trackPick(tr, ctx, consume) {
+        switch (tr.kind) {
+          case "manual": return manualSide;
+          case "banker": return "B";
+          case "follow": return followPick(ctx);
+          case "followRev": return followPick(ctx) === "B" ? "P" : "B";
+          case "virtual": return vpPick(ctx);
+          case "three":
+            if (ctx.tb.pending) {
+              var p = ctx.tb.pending;
+              if (consume) { ctx.tb.pending = null; ctx.tb.awaiting = true; }
+              return p;
+            }
+            return null;
+        }
+        return null;
+      }
+      function updateCtx(ctx, res) {
+        ctx.vp.push(res === "B" ? "W" : (res === "T" ? "T" : "L"));
+        if (res === "T") return;
+        ctx.lastNonTie = res;
+        if (ctx.tb.awaiting) { ctx.tb.buf = [res]; ctx.tb.awaiting = false; }
+        else {
+          ctx.tb.buf.push(res);
+          if (ctx.tb.buf.length === 3) {
+            var tt = ctx.tb.buf, imp = (tt[0] === tt[1]) ? tt[0] : tt[1];
+            ctx.tb.pending = imp === "B" ? "P" : "B";
+            ctx.tb.buf = [];
+          }
+        }
+      }
+      var LADDER = [1, 3, 7, 15, 31, 63], FIB = [1, 1, 2, 3, 5];
+      function progUnits(kind, st) {
+        switch (kind) {
+          case "martingale": return st.mult;
+          case "ladder137": return LADDER[st.l137];
+          case "paroli": return [1, 2, 4][st.wins];
+          case "fibonacci": return FIB[st.idx];
+          case "staircase": return st.stair;
+          default: return 1;
+        }
+      }
+      function progUpdate(kind, st, outcome) {
+        if (outcome === "T") return;
+        switch (kind) {
+          case "martingale": st.mult = outcome === "W" ? 1 : st.mult * 2; break;
+          case "ladder137": st.l137 = outcome === "W" ? 0 : Math.min(5, st.l137 + 1); break;
+          case "paroli": if (outcome === "W") { st.wins++; if (st.wins >= 3) st.wins = 0; } else st.wins = 0; break;
+          case "fibonacci": if (outcome === "W") { st.idx++; if (st.idx > 4) st.idx = 0; } else st.idx = 0; break;
+          case "staircase": st.stair = outcome === "W" ? Math.max(1, st.stair - 1) : Math.min(12, st.stair + 1); break;
+        }
+      }
+      function makeTracks(method) {
+        function mk(kind) { return { kind: kind, st: freshProg() }; }
+        switch (method) {
+          case "manual": return [mk("manual")];
+          case "banker": return [mk("banker")];
+          case "follow": return [mk("follow")];
+          case "threebead": return [mk("three")];
+          case "virtual": return [mk("virtual")];
+          case "bothdir": return [mk("follow"), mk("followRev")];
+        }
+        return [mk("banker")];
+      }
+
+      /* ---------- live session state ---------- */
+      var shoeArr = [], shoeIdx = 0, cutAt = 0, shoeOver = false, shoeNo = 0;
+      var ctx = freshCtx(), tracks = [], manualSide = "B";
+      var beadResults = [], bigCols = [], tieMarks = {}, lastBigKey = null;
+      var roads = null;
+      var S = null, playing = false, timer = null;
+      var d7Mode = "off", d7RC = 0, d7Revealed = false, lastHand = null;
+
+      function settings() {
+        return {
+          method: $("sel-method").value, prog: $("sel-prog").value,
+          bankroll: Math.max(100, parseFloat($("in-bankroll").value) || 10000),
+          unit: Math.max(1, parseFloat($("in-unit").value) || 100),
+          speed: parseInt($("sel-speed").value, 10) || 350
+        };
+      }
+      function resetRoads() {
+        beadResults = []; bigCols = []; tieMarks = {}; lastBigKey = null;
+        roads = { big: makeRoad(), eye: makeRoad(), small: makeRoad(), cock: makeRoad() };
+      }
+      function derivedMark(c, d, back) {
+        var ref = c - back;
+        if (d === 0) {
+          if (ref < 0) return null;
+          return bigCols[c - 1].length === bigCols[ref].length ? "R" : "B";
+        }
+        var ci = ref < 0 ? 0 : ref;
+        return bigCols[ci].length > d ? "R" : "B";
+      }
+      function applyResultToRoads(hand) {
+        beadResults.push(hand);
+        if (hand.res === "T") {
+          if (lastBigKey) tieMarks[lastBigKey] = (tieMarks[lastBigKey] || 0) + 1;
+          return;
+        }
+        var color = hand.res;
+        if (!bigCols.length || bigCols[bigCols.length - 1][0] !== color) bigCols.push([color]);
+        else bigCols[bigCols.length - 1].push(color);
+        var c = bigCols.length - 1, d = bigCols[c].length - 1;
+        var pos = roadAdd(roads.big, color);
+        lastBigKey = pos.x + "," + pos.y;
+        var specs = [[roads.eye, 2], [roads.small, 3], [roads.cock, 4]], i, m;
+        for (i = 0; i < specs.length; i++) {
+          m = derivedMark(c, d, specs[i][1]);
+          if (m) roadAdd(specs[i][0], m);
+        }
+      }
+      function newShoeState() {
+        shoeArr = buildShoeArray(); shoeIdx = 0;
+        cutAt = shoeArr.length - 52 - Math.floor(Math.random() * 21);
+        shoeOver = false; shoeNo++;
+        ctx = freshCtx(); tracks = makeTracks(settings().method);
+        d7RC = 0; d7Revealed = false;
+        resetRoads();
+      }
+      function resetSession() {
+        stopPlay();
+        var st = settings();
+        S = { start: st.bankroll, bankroll: st.bankroll, peak: st.bankroll, maxDD: 0, hands: 0, wins: 0, losses: 0, ties: 0, largest: 0, history: [st.bankroll], busted: false };
+        shoeNo = 0; lastHand = null;
+        newShoeState();
+        $("sim-log").innerHTML = "";
+        logLine(t("logShoe") + shoeNo + " —");
+        renderAll();
+      }
+      function logLine(msg) {
+        var el = $("sim-log"), div = document.createElement("div");
+        div.textContent = msg; el.appendChild(div);
+        while (el.children.length > 60) el.removeChild(el.firstChild);
+        el.scrollTop = el.scrollHeight;
+      }
+      function fmt$(n) { return (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString("en-US"); }
+      function sideName(s) { return s === "B" ? (LANG === "zh" ? "莊" : "Banker") : (LANG === "zh" ? "閒" : "Player"); }
+
+      function step() {
+        if (!S || S.busted) { stopPlay(); return; }
+        var st = settings();
+        if (shoeOver) { logLine(t("logShoeEnd")); newShoeState(); logLine(t("logShoe") + shoeNo + " —"); }
+        var bets = [], i, tr, side, amt, total = 0;
+        for (i = 0; i < tracks.length; i++) {
+          tr = tracks[i]; side = trackPick(tr, ctx, true);
+          if (side) { amt = progUnits(st.prog, tr.st) * st.unit; bets.push({ tr: tr, side: side, amt: amt }); total += amt; }
+        }
+        if (bets.length && total > S.bankroll) {
+          var rem = S.bankroll;
+          for (i = 0; i < bets.length; i++) { bets[i].amt = Math.min(bets[i].amt, rem); rem -= bets[i].amt; }
+          bets = bets.filter(function (b) { return b.amt > 0; });
+          total = bets.reduce(function (a, b) { return a + b.amt; }, 0);
+        }
+        if (bets.length && S.bankroll < st.unit) { S.busted = true; logLine(t("logBust")); stopPlay(); renderAll(); return; }
+        var dealt = dealFrom(shoeArr, shoeIdx); shoeIdx = dealt.next;
+        var hand = dealt.hand; lastHand = hand;
+        for (i = 0; i < hand.pc.length; i++) d7RC += d7Value(hand.pc[i].r);
+        for (i = 0; i < hand.bc.length; i++) d7RC += d7Value(hand.bc[i].r);
+        d7Revealed = false;
+        var delta = 0, parts = [];
+        for (i = 0; i < bets.length; i++) {
+          var b = bets[i], outcome;
+          if (hand.res === "T") outcome = "T";
+          else outcome = hand.res === b.side ? "W" : "L";
+          var pl = outcome === "W" ? (b.side === "B" ? b.amt * 0.95 : b.amt) : (outcome === "L" ? -b.amt : 0);
+          delta += pl;
+          if (b.amt > S.largest) S.largest = b.amt;
+          progUpdate(st.prog, b.tr.st, outcome);
+          parts.push(t("logBet") + " " + fmt$(b.amt) + " " + t("logOn") + " " + sideName(b.side) + " → " + (outcome === "W" ? t("logWin") + " " + fmt$(pl) : outcome === "L" ? t("logLose") + " " + fmt$(-b.amt) : t("logPush")));
+        }
+        S.bankroll += delta;
+        S.hands++;
+        if (bets.length) { if (delta > 0) S.wins++; else if (delta < 0) S.losses++; else S.ties++; }
+        else if (hand.res === "T") S.ties++;
+        if (S.bankroll > S.peak) S.peak = S.bankroll;
+        var dd = S.peak - S.bankroll; if (dd > S.maxDD) S.maxDD = dd;
+        S.history.push(S.bankroll);
+        updateCtx(ctx, hand.res);
+        applyResultToRoads(hand);
+        if (shoeIdx >= cutAt) shoeOver = true;
+        var resTxt = hand.res === "B" ? t("resB") : hand.res === "P" ? t("resP") : t("resT");
+        logLine("#" + S.hands + " " + sideName("P") + " " + hand.pv + " · " + sideName("B") + " " + hand.bv + " — " + resTxt + (parts.length ? " · " + parts.join("; ") : " · " + t("logNoBet")));
+        renderAll();
+      }
+
+      /* ---------- batch mode ---------- */
+      function simOneShoe(st) {
+        var arr = buildShoeArray(), idx = 0, cut = arr.length - 52 - Math.floor(Math.random() * 21);
+        var bctx = freshCtx(), btracks = makeTracks(st.method), br = st.bankroll;
+        while (idx < cut && arr.length - idx >= 6) {
+          var bets = [], i, side, amt, total = 0;
+          for (i = 0; i < btracks.length; i++) {
+            side = trackPick(btracks[i], bctx, true);
+            if (side) { amt = progUnits(st.prog, btracks[i].st) * st.unit; bets.push({ tr: btracks[i], side: side, amt: amt }); total += amt; }
+          }
+          if (bets.length && total > br) {
+            var rem = br;
+            for (i = 0; i < bets.length; i++) { bets[i].amt = Math.min(bets[i].amt, rem); rem -= bets[i].amt; }
+            bets = bets.filter(function (x) { return x.amt > 0; });
+          }
+          if (bets.length && br < st.unit) break;
+          var dealt = dealFrom(arr, idx); idx = dealt.next;
+          var hand = dealt.hand, delta = 0;
+          for (i = 0; i < bets.length; i++) {
+            var b = bets[i], oc = hand.res === "T" ? "T" : (hand.res === b.side ? "W" : "L");
+            delta += oc === "W" ? (b.side === "B" ? b.amt * 0.95 : b.amt) : (oc === "L" ? -b.amt : 0);
+            progUpdate(st.prog, b.tr.st, oc);
+          }
+          br += delta;
+          updateCtx(bctx, hand.res);
+          if (br < st.unit && bets.length) break;
+        }
+        return br - st.bankroll;
+      }
+      function runBatch() {
+        var st = settings(), n = Math.min(5000, Math.max(10, parseInt($("in-batch").value, 10) || 200));
+        $("btn-batch").disabled = true; $("batch-out").textContent = t("batchRunning");
+        setTimeout(function () {
+          var nets = [], i, v, prof = 0, tot = 0, best = -Infinity, worst = Infinity, bust = 0;
+          for (i = 0; i < n; i++) {
+            v = simOneShoe(st); nets.push(v); tot += v;
+            if (v > 0) prof++; if (v > best) best = v; if (v < worst) worst = v;
+            if (v <= -st.bankroll + st.unit) bust++;
+          }
+          var html = "<b>" + t("batchDone") + ":</b> " + n + " " + t("bShoes") + "<br>" +
+            t("bProfitable") + ": <b>" + prof + "</b> (" + (100 * prof / n).toFixed(1) + "%) · " + t("bBusted") + ": <b>" + bust + "</b><br>" +
+            t("bAvg") + ": <b>" + fmt$(tot / n) + "</b> · " + t("bTotal") + ": <b>" + fmt$(tot) + "</b><br>" +
+            t("bBest") + ": <b>" + fmt$(best) + "</b> · " + t("bWorst") + ": <b>" + fmt$(worst) + "</b>";
+          $("batch-out").innerHTML = html;
+          $("batch-chart").style.display = "block";
+          drawHistogram($("batch-chart"), nets);
+          $("btn-batch").disabled = false;
+        }, 30);
+      }
+      function cssVar(name) { return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+      function drawHistogram(cv, data) {
+        var dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 300, H = 190;
+        cv.width = W * dpr; cv.height = H * dpr;
+        var g = cv.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+        var min = Math.min.apply(null, data), max = Math.max.apply(null, data), i;
+        if (min === max) { min -= 1; max += 1; }
+        var bins = 24, counts = [], bw = (max - min) / bins;
+        for (i = 0; i < bins; i++) counts.push(0);
+        data.forEach(function (v) { var k = Math.min(bins - 1, Math.floor((v - min) / bw)); counts[k]++; });
+        var cmax = Math.max.apply(null, counts), pad = 6, cw = (W - pad * 2) / bins;
+        var zeroX = pad + (0 - min) / (max - min) * (W - pad * 2);
+        g.strokeStyle = cssVar("--gold"); g.beginPath(); g.moveTo(zeroX, 4); g.lineTo(zeroX, H - 16); g.stroke();
+        for (i = 0; i < bins; i++) {
+          var h = (H - 30) * counts[i] / cmax, cx = pad + i * cw, mid = min + (i + 0.5) * bw;
+          g.fillStyle = mid < 0 ? cssVar("--red") : cssVar("--felt");
+          g.fillRect(cx + 1, H - 16 - h, cw - 2, h);
+        }
+        g.fillStyle = cssVar("--ink-soft"); g.font = "11px sans-serif";
+        g.fillText(fmt$(min), pad, H - 3);
+        var lbl = fmt$(max), tw = g.measureText(lbl).width;
+        g.fillText(lbl, W - pad - tw, H - 3);
+      }
+      function drawBrChart() {
+        var cv = $("br-chart"); if (!cv || !S) return;
+        var dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 300, H = 190;
+        cv.width = W * dpr; cv.height = H * dpr;
+        var g = cv.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+        var data = S.history, min = Math.min.apply(null, data), max = Math.max.apply(null, data), i;
+        if (min === max) { min -= 10; max += 10; }
+        var pad = 8, span = max - min;
+        function X(k) { return pad + (W - pad * 2) * (data.length === 1 ? 0 : k / (data.length - 1)); }
+        function Y(v) { return 6 + (H - 22) * (1 - (v - min) / span); }
+        g.strokeStyle = cssVar("--gold"); g.setLineDash([4, 4]);
+        g.beginPath(); g.moveTo(pad, Y(S.start)); g.lineTo(W - pad, Y(S.start)); g.stroke(); g.setLineDash([]);
+        g.strokeStyle = cssVar("--felt"); g.lineWidth = 2; g.beginPath();
+        for (i = 0; i < data.length; i++) { if (i === 0) g.moveTo(X(i), Y(data[i])); else g.lineTo(X(i), Y(data[i])); }
+        g.stroke(); g.lineWidth = 1;
+        g.fillStyle = cssVar("--ink-soft"); g.font = "11px sans-serif";
+        g.fillText(fmt$(max), pad, 12);
+        g.fillText(fmt$(min), pad, H - 4);
+      }
+
+      /* ---------- rendering ---------- */
+      var SUITS = ["♠", "♥", "♦", "♣"], RANKS = { 1: "A", 11: "J", 12: "Q", 13: "K" };
+      function cardHTML(c) {
+        var lbl = RANKS[c.r] || String(c.r), red = c.s === 1 || c.s === 2;
+        return '<span class="pcard' + (red ? " redsuit" : "") + '">' + lbl + SUITS[c.s] + "</span>";
+      }
+      function renderHand() {
+        if (!lastHand) { $("p-cards").innerHTML = ""; $("b-cards").innerHTML = ""; $("p-total").textContent = "–"; $("b-total").textContent = "–"; $("result-banner").textContent = "—"; $("result-banner").className = "result-banner"; return; }
+        $("p-cards").innerHTML = lastHand.pc.map(cardHTML).join("");
+        $("b-cards").innerHTML = lastHand.bc.map(cardHTML).join("");
+        $("p-total").textContent = lastHand.pv + (lastHand.pc.length === 2 && lastHand.pv >= 8 ? " · " + t("nat") : "");
+        $("b-total").textContent = lastHand.bv + (lastHand.bc.length === 2 && lastHand.bv >= 8 ? " · " + t("nat") : "");
+        var rb = $("result-banner");
+        rb.className = "result-banner " + lastHand.res;
+        rb.textContent = (lastHand.res === "B" ? t("resB") : lastHand.res === "P" ? t("resP") : t("resT")) + (lastHand.dragon ? " — Dragon 7!" : "") + (lastHand.panda ? " — Panda 8!" : "");
+      }
+      function roadGridHTML(road, clsFn, metaFn) {
+        var html = "", key, pos;
+        for (key in road.cells) {
+          pos = key.split(",");
+          html += '<div class="cell ' + clsFn(road.cells[key]) + '" style="grid-column:' + (parseInt(pos[0], 10) + 1) + ";grid-row:" + (parseInt(pos[1], 10) + 1) + '">' + (metaFn ? metaFn(key) : "") + "</div>";
+        }
+        var el = document.createElement("div");
+        return { html: html, cols: road.maxX + 1 };
+      }
+      function setRoad(elId, road, clsFn, metaFn) {
+        var el = $(elId), r = roadGridHTML(road, clsFn, metaFn);
+        el.style.gridTemplateColumns = "repeat(" + Math.max(1, r.cols) + ", 17px)";
+        el.style.gridTemplateRows = "repeat(6, 17px)";
+        el.innerHTML = r.html;
+        var sc = el.parentElement; sc.scrollLeft = sc.scrollWidth;
+      }
+      function renderRoads() {
+        if (!roads) return;
+        var beadEl = $("road-bead"), cols = Math.max(1, Math.ceil(beadResults.length / 6)), html = "", i, h;
+        beadEl.style.gridTemplateColumns = "repeat(" + cols + ", 17px)";
+        beadEl.style.gridTemplateRows = "repeat(6, 17px)";
+        for (i = 0; i < beadResults.length; i++) {
+          h = beadResults[i];
+          var cls = h.res === "B" ? "bead-b" : h.res === "P" ? "bead-p" : "bead-t";
+          var ch = LANG === "zh" ? (h.res === "B" ? "莊" : h.res === "P" ? "閒" : "和") : h.res;
+          var dots = (h.bPair ? '<span class="pair-dot pair-b"></span>' : "") + (h.pPair ? '<span class="pair-dot pair-p"></span>' : "");
+          html += '<div class="cell bead ' + cls + '" style="grid-column:' + (Math.floor(i / 6) + 1) + ";grid-row:" + (i % 6 + 1) + '">' + ch + dots + "</div>";
+        }
+        beadEl.innerHTML = html;
+        var bsc = beadEl.parentElement; bsc.scrollLeft = bsc.scrollWidth;
+        var bigMeta = {};
+        setRoad("road-big", roads.big, function (c) { return c === "B" ? "b" : "p"; }, function (key) {
+          var out = "";
+          if (tieMarks[key]) out += '<span class="tie-n">' + tieMarks[key] + "</span>";
+          return out;
+        });
+        // pair dots on big road: rebuild from stored positions is complex; dots live on bead plate instead.
+        setRoad("road-eye", roads.eye, function (c) { return c === "R" ? "mark-r" : "mark-b"; }, null);
+        setRoad("road-small", roads.small, function (c) { return c === "R" ? "mark-r" : "mark-b"; }, null);
+        setRoad("road-cock", roads.cock, function (c) { return c === "R" ? "solid-r" : "solid-b"; }, null);
+      }
+      function nextBetText() {
+        var st = settings(), parts = [], i, side, amt;
+        for (i = 0; i < tracks.length; i++) {
+          side = trackPick(tracks[i], ctx, false);
+          if (side) { amt = progUnits(st.prog, tracks[i].st) * st.unit; parts.push(sideName(side) + " " + fmt$(amt)); }
+        }
+        if (settings().method === "virtual") {
+          var sig = vpPick(ctx);
+          parts.push(t("vpSignal") + ": " + (sig ? t("vpOn") : t("vpOff")));
+        }
+        return parts.length ? parts.join(" · ") : "—";
+      }
+      function renderStats() {
+        if (!S) return;
+        $("st-shoe").textContent = shoeNo;
+        $("st-cards").textContent = shoeArr.length - shoeIdx;
+        $("st-nextbet").textContent = S.busted ? "—" : nextBetText();
+        $("st-bankroll").textContent = fmt$(S.bankroll);
+        var pl = S.bankroll - S.start;
+        $("st-pl").textContent = (pl > 0 ? "+" : "") + fmt$(pl);
+        $("st-pl").style.color = pl > 0 ? "var(--tie)" : pl < 0 ? "var(--red)" : "";
+        $("st-hands").textContent = S.hands;
+        $("st-wl").textContent = S.wins + " / " + S.losses + " / " + S.ties;
+        $("st-peak").textContent = fmt$(S.peak);
+        $("st-dd").textContent = fmt$(S.maxDD);
+        $("st-largest").textContent = fmt$(S.largest);
+      }
+      function renderD7() {
+        var on = d7Mode !== "off";
+        $("d7-body").style.display = on ? "block" : "none";
+        Array.prototype.forEach.call($("d7-seg").children, function (b) { b.classList.toggle("on", b.getAttribute("data-d7") === d7Mode); });
+        $("d7-practice").style.display = d7Mode === "practice" ? "block" : "none";
+        if (!on) return;
+        var decksLeft = Math.max(0.1, (shoeArr.length - shoeIdx) / 52);
+        var tc = d7RC / decksLeft;
+        var hide = d7Mode === "practice" && !d7Revealed;
+        $("d7-rc").innerHTML = hide ? '<span class="hidden-count">•••</span>' : String(d7RC);
+        $("d7-tc").innerHTML = hide ? '<span class="hidden-count">•••</span>' : tc.toFixed(1);
+        $("d7-decks").textContent = decksLeft.toFixed(1);
+        var sig = $("d7-signal");
+        if (hide) sig.innerHTML = "";
+        else if (tc >= 4) sig.innerHTML = '<span class="signal-on">' + t("d7Bet") + "</span>";
+        else sig.textContent = t("d7NoBet");
+      }
+      function renderAll() { renderHand(); renderStats(); renderRoads(); renderD7(); drawBrChart(); }
+
+      /* ---------- controls wiring ---------- */
+      function stopPlay() { playing = false; if (timer) { clearInterval(timer); timer = null; } $("btn-play").textContent = t("play"); }
+      $("btn-play").addEventListener("click", function () {
+        if (playing) { stopPlay(); return; }
+        if (!S || S.busted) return;
+        playing = true; $("btn-play").textContent = t("pause");
+        timer = setInterval(step, settings().speed);
+      });
+      $("sel-speed").addEventListener("change", function () { if (playing) { clearInterval(timer); timer = setInterval(step, settings().speed); } });
+      $("btn-deal").addEventListener("click", function () { stopPlay(); step(); });
+      $("btn-newshoe").addEventListener("click", function () { stopPlay(); newShoeState(); logLine(t("logShoe") + shoeNo + " —"); renderAll(); });
+      $("btn-reset").addEventListener("click", resetSession);
+      $("btn-batch").addEventListener("click", runBatch);
+      $("sel-method").addEventListener("change", function () {
+        tracks = makeTracks(settings().method);
+        $("manual-bets").classList.toggle("show", settings().method === "manual");
+        renderStats();
+      });
+      $("sel-prog").addEventListener("change", function () { tracks = makeTracks(settings().method); renderStats(); });
+      function syncManualBtns() { $("mb-b").className = "btn " + (manualSide === "B" ? "on-b" : "ghost"); $("mb-p").className = "btn " + (manualSide === "P" ? "on-p" : "ghost"); }
+      $("mb-b").addEventListener("click", function () { manualSide = "B"; syncManualBtns(); renderStats(); });
+      $("mb-p").addEventListener("click", function () { manualSide = "P"; syncManualBtns(); renderStats(); });
+      Array.prototype.forEach.call($("d7-seg").children, function (b) {
+        b.addEventListener("click", function () { d7Mode = b.getAttribute("data-d7"); $("guess-out").textContent = ""; renderD7(); });
+      });
+      $("btn-reveal").addEventListener("click", function () { d7Revealed = true; renderD7(); });
+      $("btn-guess").addEventListener("click", function () {
+        var v = parseInt($("in-guess").value, 10);
+        if (isNaN(v)) { $("guess-out").textContent = t("guessEmpty"); return; }
+        $("guess-out").textContent = (v === d7RC ? t("guessRight") : t("guessWrong")) + d7RC + ".";
+      });
+      window.addEventListener("resize", function () { drawBrChart(); });
+
+      /* ---------- init ---------- */
+      syncManualBtns();
+      resetSession();
+      applyLang();
+      showPage("home");
+    </script>
+  </body>
+</html>
