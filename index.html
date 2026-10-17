@@ -267,6 +267,15 @@
       .footer-in { max-width: 1120px; margin: 0 auto; padding: 20px 16px 26px; font-size: 14px; }
       .footer-in a { color: var(--gold-bright); }
       .footer-in .fine { color: #a9bfa9; font-size: 12.5px; margin-top: 8px; }
+      .ad-slot {
+        border: 1px dashed var(--line); border-radius: 12px; background: var(--surface2);
+        color: var(--ink-soft); margin: 18px auto; padding: 16px; text-align: center;
+        font-size: 12px; max-width: 1120px;
+      }
+      .ad-slot .ad-label { display: block; margin-bottom: 4px; letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }
+      .ad-leaderboard { min-height: 100px; }
+      .ad-inarticle { min-height: 260px; max-width: 728px; }
+      .affil-note { font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
       .about-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; box-shadow: var(--shadow); max-width: 78ch; }
       .about-box p { margin: 0 0 10px; }
       .manual-bets { display: none; gap: 8px; margin-top: 8px; }
@@ -290,6 +299,13 @@
       </div>
       <nav class="main" id="mainnav"></nav>
     </header>
+
+    <!-- Leaderboard ad slot (below nav) -->
+    <div class="ad-slot ad-leaderboard">
+      <span class="ad-label">Advertisement</span>
+      <!-- Google AdSense: paste your ad unit code below this line -->
+      <div class="ad-unit" data-ad-slot="leaderboard-top"></div>
+    </div>
 
     <main>
       <!-- ================= HOME ================= -->
@@ -508,12 +524,58 @@
         <h2 class="section-title" data-i="aboutTitle"></h2>
         <div class="about-box" id="about-body"></div>
       </section>
+
+      <!-- ================= GEAR ================= -->
+      <section class="page" id="page-gear">
+        <h2 class="section-title" data-i="gearTitle"></h2>
+        <p class="section-lede" data-i="gearLede"></p>
+        <div class="cards">
+          <div class="card">
+            <h3 data-i="gear1T"></h3>
+            <p data-i="gear1B"></p>
+            <a class="btn" href="https://www.amazon.com/s?k=theory+of+gambling+and+statistical+logic+epstein&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
+          </div>
+          <div class="card">
+            <h3 data-i="gear2T"></h3>
+            <p data-i="gear2B"></p>
+            <a class="btn" href="https://www.amazon.com/s?k=professional+plastic+playing+cards+poker&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
+          </div>
+          <div class="card">
+            <h3 data-i="gear3T"></h3>
+            <p data-i="gear3B"></p>
+            <a class="btn" href="https://www.amazon.com/s?k=automatic+card+shuffler+6+deck&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
+          </div>
+          <div class="card">
+            <h3 data-i="gear4T"></h3>
+            <p data-i="gear4B"></p>
+            <a class="btn" href="https://www.amazon.com/s?k=baccarat+table+felt+layout&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
+          </div>
+        </div>
+        <p class="affil-note" data-i="gearAffil"></p>
+        <h2 class="section-title" style="margin-top:28px" data-i="merchTitle"></h2>
+        <p class="section-lede" data-i="merchLede"></p>
+        <div class="cards">
+          <div class="card">
+            <h3 data-i="merchT"></h3>
+            <p data-i="merchB"></p>
+            <a class="btn gold" href="https://hedgewiz.printify.me/" target="_blank" rel="noopener" data-i="merchBtn"></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- In-article ad slot (before footer) -->
+      <div class="ad-slot ad-inarticle">
+        <span class="ad-label">Advertisement</span>
+        <!-- Google AdSense: paste your ad unit code below this line -->
+        <div class="ad-unit" data-ad-slot="inarticle-bottom"></div>
+      </div>
     </main>
 
     <footer class="site">
       <div class="footer-in">
         <div><span data-i="footBy"></span> <b>Tim Lin</b> · <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a></div>
         <div class="fine" data-i="footFine"></div>
+        <div class="fine" data-i="footAffil"></div>
       </div>
     </footer>
 
@@ -522,7 +584,7 @@
       var I18N = {
         en: {
           tagline: "Baccarat strategy guides, simulators & side-bet math",
-          navHome: "Home", navGuide: "Strategy Guide", navSide: "Side Bets & Counting", navSim: "Simulator", navAbout: "About",
+          navHome: "Home", navGuide: "Strategy Guide", navSide: "Side Bets & Counting", navSim: "Simulator", navGear: "Gear", navAbout: "About",
           heroSub: "Baccarat strategy guides, simulators & side-bet math",
           heroBody: "A practical, honest baccarat resource: the betting systems players actually use — explained step by step, with their real mechanics — the card-counting math behind the side bets, and a full 8-deck simulator so you can test every idea yourself before a single real chip is at risk.",
           edgeBanker: "Banker house edge", edgePlayer: "Player house edge", edgeTie: "Tie house edge",
@@ -553,6 +615,19 @@
           roadsT: "Scoreboards", roadBead: "Bead Plate 珠盤路", roadBig: "Big Road 大路", roadEye: "Big Eye Boy 大眼仔路", roadSmall: "Small Road 小路", roadCock: "Cockroach Pig 蟑螂路",
           logT: "Hand Log",
           aboutTitle: "About Baccarat Lab",
+          gearTitle: "Player's Kit",
+          gearLede: "The physical tools of the game: what to read, what to deal with, and what to practice on. No systems for sale here — just the gear.",
+          gear1T: "Essential reading", gear1B: "Start with Epstein's <i>The Theory of Gambling and Statistical Logic</i> (the math bible) and Poundstone's <i>Fortune's Formula</i> (Kelly, bankroll, and why systems fail).",
+          gear2T: "Professional playing cards", gear2B: "Plastic, casino-grade cards that handle like the real thing — for home practice dealing and count drills.",
+          gear3T: "Automatic card shufflers", gear3B: "Multi-deck shufflers for running your own practice shoes at home.",
+          gear4T: "Baccarat table layouts", gear4B: "Felt layouts with the proper betting spots — learn the table geography before you sit down.",
+          gearBtn: "See it on Amazon",
+          gearAffil: "Affiliate disclosure: links on this page are Amazon affiliate links. As an Amazon Associate I earn from qualifying purchases — it costs you nothing and keeps this site free.",
+          merchTitle: "Wear the Lab",
+          merchLede: "Baccarat Lab tees and gear from the print-on-demand shop.",
+          merchT: "Baccarat Lab tees", merchB: "Baccarat Lab designs are coming to the merch shop — check back soon.",
+          merchBtn: "Visit the merch shop",
+          footAffil: "Affiliate disclosure: some links on this page are Amazon affiliate links. As an Amazon Associate I earn from qualifying purchases.",
           footBy: "Baccarat Lab — by", footFine: "Educational content about baccarat strategy and mathematics. Nothing here is financial or gambling advice, and no system overcomes the house edge. Play responsibly, within your means.",
           resB: "Banker wins", resP: "Player wins", resT: "Tie — bets push",
           nat: "natural", logBet: "Bet", logOn: "on", logWin: "won", logLose: "lost", logPush: "push",
@@ -565,7 +640,7 @@
         },
         zh: {
           tagline: "百家樂策略指南、模擬器與邊注數學",
-          navHome: "首頁", navGuide: "策略指南", navSide: "邊注與算牌", navSim: "模擬器", navAbout: "關於",
+          navHome: "首頁", navGuide: "策略指南", navSide: "邊注與算牌", navSim: "模擬器", navGear: "裝備", navAbout: "關於",
           heroSub: "百家樂策略指南、模擬器與邊注數學",
           heroBody: "一個實用又誠實的百家樂資源：介紹玩家真正在用的投注系統——一步步拆解真實機制——加上邊注背後的算牌數學，以及完整的八副牌模擬器，讓你在押下任何一枚真籌碼之前，先親手驗證每一個想法。",
           edgeBanker: "莊家優勢", edgePlayer: "閒家優勢", edgeTie: "和局優勢",
@@ -596,6 +671,19 @@
           roadsT: "路單", roadBead: "珠盤路 Bead Plate", roadBig: "大路 Big Road", roadEye: "大眼仔路 Big Eye Boy", roadSmall: "小路 Small Road", roadCock: "蟑螂路 Cockroach Pig",
           logT: "對局紀錄",
           aboutTitle: "關於 Baccarat Lab",
+          gearTitle: "玩家裝備",
+          gearLede: "遊戲的實體工具：讀什麼、用什麼牌、在什麼上練習。這裡不賣必勝系統——只有裝備。",
+          gear1T: "必讀書籍", gear1B: "從 Epstein 的 <i>The Theory of Gambling and Statistical Logic</i>（數學聖經）和 Poundstone 的 <i>Fortune's Formula</i>（凱利公式、資金管理，以及投注系統為何失效）開始。",
+          gear2T: "專業撲克牌", gear2B: "塑膠賭場級撲克牌，手感如真——在家練習發牌與算牌。",
+          gear3T: "自動洗牌機", gear3B: "多副牌洗牌機，在家自己跑練習鞋。",
+          gear4T: "百家樂桌布", gear4B: "印有正規投注區的桌布——上桌前先熟悉版面。",
+          gearBtn: "在 Amazon 查看",
+          gearAffil: "聯盟行銷揭露：本頁連結為 Amazon 聯盟連結。作為 Amazon Associate，我從符合條件的購買中賺取佣金——您不需多付任何費用，這讓本站保持免費。",
+          merchTitle: "穿上 Lab",
+          merchLede: "來自按需印刷商店的 Baccarat Lab T 恤與周邊。",
+          merchT: "Baccarat Lab T 恤", merchB: "Baccarat Lab 設計即將上架周邊商店——敬請期待。",
+          merchBtn: "前往周邊商店",
+          footAffil: "聯盟行銷揭露：本頁部分連結為 Amazon 聯盟連結。作為 Amazon Associate，我從符合條件的購買中賺取佣金。",
           footBy: "Baccarat Lab — 作者", footFine: "本站為百家樂策略與數學的教育內容，不構成任何財務或博弈建議，任何系統都無法克服莊家優勢。請理性娛樂、量力而為。",
           resB: "莊贏", resP: "閒贏", resT: "和局——注金退回",
           nat: "例牌", logBet: "下注", logOn: "押", logWin: "贏", logLose: "輸", logPush: "退注",
@@ -1081,7 +1169,8 @@
       function $(id) { return document.getElementById(id); }
       var PAGES = [
         { id: "home", key: "navHome" }, { id: "guide", key: "navGuide" },
-        { id: "sidebets", key: "navSide" }, { id: "sim", key: "navSim" }, { id: "about", key: "navAbout" }
+        { id: "sidebets", key: "navSide" }, { id: "sim", key: "navSim" },
+        { id: "gear", key: "navGear" }, { id: "about", key: "navAbout" }
       ];
       var curPage = "home", curGuideTab = "threebead", curSideTab = "dragon7";
 
