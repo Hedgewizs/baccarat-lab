@@ -381,6 +381,7 @@
                   <option value="bothdir" data-i="mBoth"></option>
                   <option value="virtual" data-i="mVirtual"></option>
                   <option value="banker" data-i="mBanker"></option>
+                  <option value="sideonly" data-i="mSideOnly"></option>
                 </select>
                 <div class="manual-bets" id="manual-bets">
                   <button type="button" class="btn ghost" id="mb-b"></button>
@@ -432,6 +433,41 @@
                 <button type="button" class="btn ghost" id="btn-newshoe"></button>
                 <button type="button" class="btn ghost" id="btn-reset"></button>
               </div>
+            </div>
+
+            <div class="panel" id="so-panel" style="display:none">
+              <h3 data-i="soTitle"></h3>
+              <p style="font-size:13.5px; color:var(--ink-soft); margin:0 0 10px" data-i="soLede"></p>
+              <div class="field">
+                <label data-i="soBetSel"></label>
+                <div class="seg" id="so-seg">
+                  <button type="button" data-so="d7" data-i="soD7"></button>
+                  <button type="button" data-so="p8" data-i="soP8"></button>
+                  <button type="button" data-so="both" class="on" data-i="soBoth"></button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="in-sounit" data-i="soUnit"></label>
+                <input type="number" id="in-sounit" value="25" min="1" step="1" />
+              </div>
+              <div class="field">
+                <label style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:var(--ink)">
+                  <input type="checkbox" id="ck-soramp" /> <span data-i="soRamp"></span>
+                </label>
+                <div style="font-size:12.5px; color:var(--ink-soft); margin-top:4px" data-i="soRampHelp"></div>
+              </div>
+              <div class="field" id="so-maxwrap" style="display:none">
+                <label for="in-somax" data-i="soMaxU"></label>
+                <input type="number" id="in-somax" value="4" min="1" max="12" step="1" />
+              </div>
+              <canvas class="chart" id="so-chart" height="150" style="margin-top:6px"></canvas>
+              <table class="stats-table" style="margin-top:8px">
+                <tr><td data-i="soBets"></td><td class="v" id="so-bets">0</td></tr>
+                <tr><td data-i="soWL"></td><td class="v" id="so-wl">0 / 0</td></tr>
+                <tr><td data-i="soPL"></td><td class="v" id="so-pl">–</td></tr>
+                <tr><td data-i="soTrig"></td><td class="v" id="so-trig">0</td></tr>
+                <tr><td data-i="soTC"></td><td class="v" id="so-tc">–</td></tr>
+              </table>
             </div>
 
             <div class="panel">
@@ -625,6 +661,11 @@
           simNote: "<b>Simulation only — no real money.</b> No selection or progression system changes baccarat's fixed house edge: Banker 1.06%, Player 1.24%, Tie 14.36%. Systems reshape variance; the edge grinds on regardless. Watch the batch results if you don't believe it.",
           controlsT: "Controls", fMethod: "Bet selection", fProg: "Progression", fBankroll: "Starting bankroll ($)", fUnit: "Base unit ($)", fSpeed: "Playback speed",
           mManual: "Manual (choose each hand)", mFollow: "Follow the winner", mThree: "Three-bead road counter-bet", mBoth: "One method, both directions (2 flat tracks)", mVirtual: "Virtual Player signal", mBanker: "Always Banker",
+          mSideOnly: "Side Bets Only (Dragon 7 / Panda 8)",
+          soTitle: "Side Bets Only — Advantage Play", soLede: "No Player/Banker/Tie bets. The simulator counts every card and places the Dragon 7 / Panda 8 side bet only when the true count hits the published trigger. Watch the edge flip in real time.",
+          soBetSel: "Which bets", soD7: "Dragon 7 only", soP8: "Panda 8 only", soBoth: "Both",
+          soUnit: "Bet unit ($)", soRamp: "Scale bet with true count", soRampHelp: "1 unit at the trigger, +1 unit per 2 true-count points above it, capped at max units.",
+          soMaxU: "Max units", soBets: "Side bets placed", soWL: "Wins / Losses", soPL: "Side-bet P/L", soTrig: "Trigger hits", soTC: "True count now (D7 / P8)",
           pFlat: "Flat betting", pMart: "Martingale (double on loss)", p137: "137 six-level ladder", pParoli: "Paroli (double on win, max 3)", pFib: "Fibonacci win-chase (5 bets)", pStair: "Staircase (up on loss, down on win)",
           sSlow: "Slow", sMed: "Medium", sFast: "Fast",
           deal: "Deal 1 hand", play: "▶ Play", pause: "⏸ Pause", newShoe: "New shoe", reset: "Reset session",
@@ -693,6 +734,11 @@
           simNote: "<b>純模擬——不涉及真錢。</b>任何選注法或纜法都改變不了百家樂固定的莊家優勢：莊 1.06%、閒 1.24%、和 14.36%。系統只能改變波動形狀，優勢照樣慢慢磨。不信的話，看批量測試結果。",
           controlsT: "控制台", fMethod: "選注法", fProg: "注碼纜法", fBankroll: "起始資金（$）", fUnit: "基本注碼（$）", fSpeed: "播放速度",
           mManual: "手動（每局自選）", mFollow: "莊閒跟打（跟贏家）", mThree: "三珠路反打一口", mBoth: "單一方法正反打（兩條平注線）", mVirtual: "虛擬玩家訊號", mBanker: "固定押莊",
+          mSideOnly: "只玩邊注（龍七 / 熊貓八）",
+          soTitle: "只玩邊注 —— 優勢打法", soLede: "不押莊閒和。模擬器會計算每一張牌，只在真數達到公開觸發點時才下龍七 / 熊貓八邊注。即時看著優勢翻轉。",
+          soBetSel: "投注選擇", soD7: "只投龍七", soP8: "只投熊貓八", soBoth: "兩者都投",
+          soUnit: "注碼單位 ($)", soRamp: "按真數加注", soRampHelp: "觸發點下 1 注，每高 2 點真數加 1 注，上限為最大倍數。",
+          soMaxU: "最大倍數", soBets: "邊注次數", soWL: "勝 / 負", soPL: "邊注盈虧", soTrig: "觸發次數", soTC: "目前真數（龍七 / 熊貓八）",
           pFlat: "平注", pMart: "直纜（輸了加倍）", p137: "137 六層纜法", pParoli: "帕羅利（贏了加倍，最多 3 口）", pFib: "五注斐氏勝追纜", pStair: "樓梯纜（輸升贏降）",
           sSlow: "慢", sMed: "中", sFast: "快",
           deal: "發一局", play: "▶ 播放", pause: "⏸ 暫停", newShoe: "新牌靴", reset: "重置",
@@ -1537,6 +1583,7 @@
           case "threebead": return [mk("three")];
           case "virtual": return [mk("virtual")];
           case "bothdir": return [mk("follow"), mk("followRev")];
+          case "sideonly": return [];
         }
         return [mk("banker")];
       }
@@ -1549,6 +1596,8 @@
       var S = null, playing = false, timer = null;
       var d7Mode = "off", d7RC = 0, d7Revealed = false, lastHand = null;
       var cntSel = "d7", p8RC = 0, manualSides = {};
+      var soBet = "both", soStats = null, soTC = [];
+      function soFresh() { return { bets: 0, wins: 0, losses: 0, pl: 0, trig: 0 }; }
       var SIDE_BETS = [
         { id: "dragon7", key: "sbD7" }, { id: "panda8", key: "sbP8" },
         { id: "tigerS", key: "sbTigerS" }, { id: "tigerB", key: "sbTigerB" },
@@ -1647,7 +1696,7 @@
         stopPlay();
         var st = settings();
         S = { start: st.bankroll, bankroll: st.bankroll, peak: st.bankroll, maxDD: 0, hands: 0, wins: 0, losses: 0, ties: 0, largest: 0, history: [st.bankroll], busted: false };
-        shoeNo = 0; lastHand = null;
+        shoeNo = 0; lastHand = null; soStats = soFresh(); soTC = [];
         newShoeState();
         $("sim-log").innerHTML = "";
         logLine(t("logShoe") + shoeNo + " —");
@@ -1667,6 +1716,7 @@
         var st = settings();
         if (shoeOver) { logLine(t("logShoeEnd")); newShoeState(); logLine(t("logShoe") + shoeNo + " —"); }
         var bets = [], i, tr, side, amt, total = 0;
+        if (st.method === "sideonly") { stepSideOnly(st); return; }
         for (i = 0; i < tracks.length; i++) {
           tr = tracks[i]; side = trackPick(tr, ctx, true);
           if (side) { amt = progUnits(st.prog, tr.st) * st.unit; bets.push({ tr: tr, side: side, amt: amt }); total += amt; }
@@ -1721,6 +1771,69 @@
         if (S.bankroll > S.peak) S.peak = S.bankroll;
         var dd = S.peak - S.bankroll; if (dd > S.maxDD) S.maxDD = dd;
         S.history.push(S.bankroll);
+        updateCtx(ctx, hand.res);
+        applyResultToRoads(hand);
+        if (shoeIdx >= cutAt) shoeOver = true;
+        var resTxt = hand.res === "B" ? t("resB") : hand.res === "P" ? t("resP") : t("resT");
+        logLine("#" + S.hands + " " + sideName("P") + " " + hand.pv + " · " + sideName("B") + " " + hand.bv + " — " + resTxt + (parts.length ? " · " + parts.join("; ") : " · " + t("logNoBet")));
+        renderAll();
+      }
+
+      /* ---------- side bets only mode ---------- */
+      function soUnit() { return Math.max(1, parseFloat($("in-sounit").value) || 25); }
+      function soMaxUnits() { return Math.max(1, Math.min(12, parseInt($("in-somax").value, 10) || 4)); }
+      function soDecksLeft() { return Math.max(0.1, (shoeArr.length - shoeIdx) / 52); }
+      function soBetAmt(tc, trig) {
+        var u = soUnit();
+        if (!$("ck-soramp").checked) return u;
+        var mult = 1 + Math.floor((tc - trig) / 2);
+        return u * Math.max(1, Math.min(soMaxUnits(), mult));
+      }
+      function stepSideOnly(st) {
+        if (shoeOver) { logLine(t("logShoeEnd")); newShoeState(); logLine(t("logShoe") + shoeNo + " —"); }
+        var decks = soDecksLeft();
+        var tcD7 = d7RC / decks, tcP8 = p8RC / decks;
+        var sbBets = [];
+        if ((soBet === "d7" || soBet === "both") && tcD7 >= 4) sbBets.push({ id: "dragon7", key: "sbD7", amt: soBetAmt(tcD7, 4), tc: tcD7 });
+        if ((soBet === "p8" || soBet === "both") && tcP8 >= 11) sbBets.push({ id: "panda8", key: "sbP8", amt: soBetAmt(tcP8, 11), tc: tcP8 });
+        var total = sbBets.reduce(function (a, b) { return a + b.amt; }, 0);
+        if (total > S.bankroll) {
+          var rem = S.bankroll;
+          sbBets.forEach(function (b) { b.amt = Math.min(b.amt, rem); rem -= b.amt; });
+          sbBets = sbBets.filter(function (b) { return b.amt > 0; });
+          total = sbBets.reduce(function (a, b) { return a + b.amt; }, 0);
+        }
+        if (sbBets.length && S.bankroll <= 0) { S.busted = true; logLine(t("logBust")); stopPlay(); renderAll(); return; }
+        var dealt = dealFrom(shoeArr, shoeIdx); shoeIdx = dealt.next;
+        var hand = dealt.hand; lastHand = hand;
+        var i;
+        for (i = 0; i < hand.pc.length; i++) d7RC += d7Value(hand.pc[i].r);
+        for (i = 0; i < hand.bc.length; i++) d7RC += d7Value(hand.bc[i].r);
+        for (i = 0; i < hand.pc.length; i++) p8RC += p8Value(hand.pc[i].r);
+        for (i = 0; i < hand.bc.length; i++) p8RC += p8Value(hand.bc[i].r);
+        d7Revealed = false;
+        var delta = 0, parts = [];
+        for (i = 0; i < sbBets.length; i++) {
+          var sb = sbBets[i], sr = sideBetResult(sb.id, hand);
+          var spl = sr.push ? 0 : (sr.win ? sb.amt * sr.pay : -sb.amt);
+          delta += spl;
+          soStats.bets++;
+          if (sr.win) soStats.wins++; else if (!sr.push) soStats.losses++;
+          soStats.pl += spl;
+          if (sb.amt > S.largest) S.largest = sb.amt;
+          parts.push(t("logSide") + " " + t(sb.key) + " " + fmt$(sb.amt) + " \u2192 " +
+            (sr.push ? t("logPush") : sr.win ? t("logWin") + " " + fmt$(spl) : t("logLose") + " " + fmt$(sb.amt)));
+        }
+        if (sbBets.length) soStats.trig++;
+        S.bankroll += delta;
+        S.hands++;
+        if (sbBets.length) { if (delta > 0) S.wins++; else if (delta < 0) S.losses++; else S.ties++; }
+        else if (hand.res === "T") S.ties++;
+        if (S.bankroll > S.peak) S.peak = S.bankroll;
+        var dd = S.peak - S.bankroll; if (dd > S.maxDD) S.maxDD = dd;
+        S.history.push(S.bankroll);
+        soTC.push({ d7: tcD7, p8: tcP8, bet: sbBets.length > 0 });
+        if (soTC.length > 240) soTC.shift();
         updateCtx(ctx, hand.res);
         applyResultToRoads(hand);
         if (shoeIdx >= cutAt) shoeOver = true;
@@ -1888,6 +2001,12 @@
           var sig = vpPick(ctx);
           parts.push(t("vpSignal") + ": " + (sig ? t("vpOn") : t("vpOff")));
         }
+        if (settings().method === "sideonly") {
+          var decks = Math.max(0.1, (shoeArr.length - shoeIdx) / 52);
+          var t7 = d7RC / decks, t8 = p8RC / decks, u = soUnit();
+          if ((soBet === "d7" || soBet === "both") && t7 >= 4) parts.push(t("sbD7") + " " + fmt$(u));
+          if ((soBet === "p8" || soBet === "both") && t8 >= 11) parts.push(t("sbP8") + " " + fmt$(u));
+        }
         if (settings().method === "manual") {
           for (var k = 0; k < SIDE_BETS.length; k++) {
             if (manualSides[SIDE_BETS[k].id]) parts.push(t(SIDE_BETS[k].key) + " " + fmt$(sideUnit()));
@@ -1932,7 +2051,53 @@
         else sig.textContent = cntSel === "d7" ? t("d7NoBet") : t("p8NoBet");
         $("cnt-help").textContent = cntSel === "d7" ? t("d7Help") : t("p8Help");
       }
-      function renderAll() { renderHand(); renderStats(); renderRoads(); renderD7(); drawBrChart(); }
+      function drawSoChart() {
+        var cv = $("so-chart"); if (!cv || !soTC.length) return;
+        var dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 300, H = 150;
+        cv.width = W * dpr; cv.height = H * dpr;
+        var g = cv.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+        var showD7 = soBet !== "p8", showP8 = soBet !== "d7";
+        var min = -12, max = 16, pad = 8;
+        function X(k) { return pad + (W - pad * 2) * (soTC.length === 1 ? 0 : k / (soTC.length - 1)); }
+        function Y(v) { return 6 + (H - 22) * (1 - (v - min) / (max - min)); }
+        // trigger lines
+        g.setLineDash([5, 4]);
+        if (showD7) { g.strokeStyle = "rgba(212,175,55,.8)"; g.beginPath(); g.moveTo(pad, Y(4)); g.lineTo(W - pad, Y(4)); g.stroke(); }
+        if (showP8) { g.strokeStyle = "rgba(120,180,255,.8)"; g.beginPath(); g.moveTo(pad, Y(11)); g.lineTo(W - pad, Y(11)); g.stroke(); }
+        g.setLineDash([]);
+        // zero line
+        g.strokeStyle = cssVar("--line"); g.beginPath(); g.moveTo(pad, Y(0)); g.lineTo(W - pad, Y(0)); g.stroke();
+        function line(key, color) {
+          g.strokeStyle = color; g.lineWidth = 1.5; g.beginPath();
+          for (var i = 0; i < soTC.length; i++) {
+            var v = Math.max(min, Math.min(max, soTC[i][key]));
+            if (i === 0) g.moveTo(X(i), Y(v)); else g.lineTo(X(i), Y(v));
+          }
+          g.stroke(); g.lineWidth = 1;
+          // bet markers
+          g.fillStyle = color;
+          for (var j = 0; j < soTC.length; j++) {
+            if (soTC[j].bet) { var vv = Math.max(min, Math.min(max, soTC[j][key])); g.beginPath(); g.arc(X(j), Y(vv), 2.5, 0, 7); g.fill(); }
+          }
+        }
+        if (showD7) line("d7", cssVar("--gold"));
+        if (showP8) line("p8", "#78b4ff");
+        g.fillStyle = cssVar("--ink-soft"); g.font = "11px sans-serif";
+        if (showD7) g.fillText("D7 +4", pad + 2, Y(4) - 3);
+        if (showP8) g.fillText("P8 +11", pad + 2, Y(11) - 3);
+      }
+      function renderSoStats() {
+        if (!soStats) return;
+        $("so-bets").textContent = soStats.bets;
+        $("so-wl").textContent = soStats.wins + " / " + soStats.losses;
+        var pl = soStats.pl;
+        $("so-pl").textContent = (pl > 0 ? "+" : "") + fmt$(pl);
+        $("so-pl").style.color = pl > 0 ? "var(--tie)" : pl < 0 ? "var(--red)" : "";
+        $("so-trig").textContent = soStats.trig;
+        var decks = Math.max(0.1, (shoeArr.length - shoeIdx) / 52);
+        $("so-tc").textContent = (d7RC / decks).toFixed(1) + " / " + (p8RC / decks).toFixed(1);
+      }
+      function renderAll() { renderHand(); renderStats(); renderRoads(); renderD7(); drawBrChart(); renderSoStats(); drawSoChart(); }
 
       /* ---------- controls wiring ---------- */
       function stopPlay() { playing = false; if (timer) { clearInterval(timer); timer = null; } $("btn-play").textContent = t("play"); }
@@ -1949,7 +2114,7 @@
       $("btn-batch").addEventListener("click", runBatch);
       $("sel-method").addEventListener("change", function () {
         tracks = makeTracks(settings().method);
-        $("manual-bets").classList.toggle("show", settings().method === "manual"); syncSideBetWrap();
+        $("manual-bets").classList.toggle("show", settings().method === "manual"); syncSideBetWrap(); syncSoPanel();
         renderStats();
       });
       $("sel-prog").addEventListener("change", function () { tracks = makeTracks(settings().method); renderStats(); });
@@ -1967,6 +2132,12 @@
         });
       }
       function syncSideBetWrap() { $("sidebet-wrap").style.display = settings().method === "manual" ? "block" : "none"; }
+      function syncSoPanel() {
+        var on = settings().method === "sideonly";
+        $("so-panel").style.display = on ? "block" : "none";
+        if (on && d7Mode === "off") { d7Mode = "learn"; renderD7(); }
+        if (on) { renderSoStats(); drawSoChart(); }
+      }
       function syncManualBtns() { $("mb-b").className = "btn " + (manualSide === "B" ? "on-b" : "ghost"); $("mb-p").className = "btn " + (manualSide === "P" ? "on-p" : "ghost"); }
       $("mb-b").addEventListener("click", function () { manualSide = "B"; syncManualBtns(); renderStats(); });
       $("mb-p").addEventListener("click", function () { manualSide = "P"; syncManualBtns(); renderStats(); });
@@ -1983,11 +2154,19 @@
         var grc = cntSel === "d7" ? d7RC : p8RC;
         $("guess-out").textContent = (v === grc ? t("guessRight") : t("guessWrong")) + grc + ".";
       });
-      window.addEventListener("resize", function () { drawBrChart(); });
+      Array.prototype.forEach.call($("so-seg").children, function (b) {
+        b.addEventListener("click", function () {
+          soBet = b.getAttribute("data-so");
+          Array.prototype.forEach.call($("so-seg").children, function (x) { x.classList.toggle("on", x === b); });
+          renderSoStats(); drawSoChart(); renderStats();
+        });
+      });
+      $("ck-soramp").addEventListener("change", function () { $("so-maxwrap").style.display = this.checked ? "block" : "none"; });
+      window.addEventListener("resize", function () { drawBrChart(); drawSoChart(); });
 
       /* ---------- init ---------- */
       buildSideBetGrid();
-      syncManualBtns();
+      syncManualBtns(); syncSoPanel();
       resetSession();
       applyLang();
       showPage("home");
