@@ -415,7 +415,7 @@
               </div>
               <div class="field">
                 <label for="in-unit" data-i="fUnit"></label>
-                <input type="number" id="in-unit" value="100" min="1" step="1" />
+                <input type="number" id="in-unit" value="100" min="0" step="1" />
               </div>
               <div class="field">
                 <label for="sel-speed" data-i="fSpeed"></label>
@@ -440,11 +440,8 @@
               <p style="font-size:13.5px; color:var(--ink-soft); margin:0 0 10px" data-i="soLede"></p>
               <div class="field">
                 <label data-i="soBetSel"></label>
-                <div class="seg" id="so-seg">
-                  <button type="button" data-so="d7" data-i="soD7"></button>
-                  <button type="button" data-so="p8" data-i="soP8"></button>
-                  <button type="button" data-so="both" class="on" data-i="soBoth"></button>
-                </div>
+                <div id="so-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px"></div>
+                <div style="font-size:12.5px;color:var(--ink-soft);margin-top:6px" data-i="soFlatNote"></div>
               </div>
               <div class="field">
                 <label for="in-sounit" data-i="soUnit"></label>
@@ -661,9 +658,9 @@
           simNote: "<b>Simulation only — no real money.</b> No selection or progression system changes baccarat's fixed house edge: Banker 1.06%, Player 1.24%, Tie 14.36%. Systems reshape variance; the edge grinds on regardless. Watch the batch results if you don't believe it.",
           controlsT: "Controls", fMethod: "Bet selection", fProg: "Progression", fBankroll: "Starting bankroll ($)", fUnit: "Base unit ($)", fSpeed: "Playback speed",
           mManual: "Manual (choose each hand)", mFollow: "Follow the winner", mThree: "Three-bead road counter-bet", mBoth: "One method, both directions (2 flat tracks)", mVirtual: "Virtual Player signal", mBanker: "Always Banker",
-          mSideOnly: "Side Bets Only (Dragon 7 / Panda 8)",
-          soTitle: "Side Bets Only — Advantage Play", soLede: "No Player/Banker/Tie bets. The simulator counts every card and places the Dragon 7 / Panda 8 side bet only when the true count hits the published trigger. Watch the edge flip in real time.",
-          soBetSel: "Which bets", soD7: "Dragon 7 only", soP8: "Panda 8 only", soBoth: "Both",
+          mSideOnly: "Side Bets Only (all side bets)",
+          soTitle: "Side Bets Only — Advantage Play", soLede: "No Player/Banker/Tie bets — set the main unit to $0 and the shoe still deals. Dragon 7 and Panda 8 are counted and bet only at their published triggers; every other side bet goes flat every hand. Watch the edge flip in real time.",
+          soBetSel: "Which side bets", soFlatNote: "Dragon 7 (TC \u2265 +4) and Panda 8 (TC \u2265 +11) are the countable ones — bet only at trigger. Everything else is -EV: bet flat every hand, sized like a lottery ticket.",
           soUnit: "Bet unit ($)", soRamp: "Scale bet with true count", soRampHelp: "1 unit at the trigger, +1 unit per 2 true-count points above it, capped at max units.",
           soMaxU: "Max units", soBets: "Side bets placed", soWL: "Wins / Losses", soPL: "Side-bet P/L", soTrig: "Trigger hits", soTC: "True count now (D7 / P8)",
           pFlat: "Flat betting", pMart: "Martingale (double on loss)", p137: "137 six-level ladder", pParoli: "Paroli (double on win, max 3)", pFib: "Fibonacci win-chase (5 bets)", pStair: "Staircase (up on loss, down on win)",
@@ -734,9 +731,9 @@
           simNote: "<b>純模擬——不涉及真錢。</b>任何選注法或纜法都改變不了百家樂固定的莊家優勢：莊 1.06%、閒 1.24%、和 14.36%。系統只能改變波動形狀，優勢照樣慢慢磨。不信的話，看批量測試結果。",
           controlsT: "控制台", fMethod: "選注法", fProg: "注碼纜法", fBankroll: "起始資金（$）", fUnit: "基本注碼（$）", fSpeed: "播放速度",
           mManual: "手動（每局自選）", mFollow: "莊閒跟打（跟贏家）", mThree: "三珠路反打一口", mBoth: "單一方法正反打（兩條平注線）", mVirtual: "虛擬玩家訊號", mBanker: "固定押莊",
-          mSideOnly: "只玩邊注（龍七 / 熊貓八）",
-          soTitle: "只玩邊注 —— 優勢打法", soLede: "不押莊閒和。模擬器會計算每一張牌，只在真數達到公開觸發點時才下龍七 / 熊貓八邊注。即時看著優勢翻轉。",
-          soBetSel: "投注選擇", soD7: "只投龍七", soP8: "只投熊貓八", soBoth: "兩者都投",
+          mSideOnly: "只玩邊注（全部邊注）",
+          soTitle: "只玩邊注 —— 優勢打法", soLede: "不押莊閒和——把主注設為 $0，牌靴照樣發牌。龍七與熊貓八會算牌，只在真數達到公開觸發點時下注；其他邊注每局固定下注。即時看著優勢翻轉。",
+          soBetSel: "選擇邊注", soFlatNote: "龍七（真數 \u2265 +4）與熊貓八（真數 \u2265 +11）是可以算的——只在觸發點下注。其他都是負期望值：每局固定下注，就當買彩票。",
           soUnit: "注碼單位 ($)", soRamp: "按真數加注", soRampHelp: "觸發點下 1 注，每高 2 點真數加 1 注，上限為最大倍數。",
           soMaxU: "最大倍數", soBets: "邊注次數", soWL: "勝 / 負", soPL: "邊注盈虧", soTrig: "觸發次數", soTC: "目前真數（龍七 / 熊貓八）",
           pFlat: "平注", pMart: "直纜（輸了加倍）", p137: "137 六層纜法", pParoli: "帕羅利（贏了加倍，最多 3 口）", pFib: "五注斐氏勝追纜", pStair: "樓梯纜（輸升贏降）",
@@ -1597,7 +1594,8 @@
       var S = null, playing = false, timer = null;
       var d7Mode = "off", d7RC = 0, d7Revealed = false, lastHand = null;
       var cntSel = "d7", p8RC = 0, manualSides = {};
-      var soBet = "both", soStats = null, soTC = [];
+      var soBets = { dragon7: true, panda8: true, tigerS: false, tigerB: false, dbP: false, dbB: false, tie7: false, bpair: false, ppair: false, tie: false };
+      var soStats = null, soTC = [];
       function soFresh() { return { bets: 0, wins: 0, losses: 0, pl: 0, trig: 0 }; }
       var SIDE_BETS = [
         { id: "dragon7", key: "sbD7" }, { id: "panda8", key: "sbP8" },
@@ -1650,7 +1648,7 @@
         return {
           method: $("sel-method").value, prog: $("sel-prog").value,
           bankroll: Math.max(100, parseFloat($("in-bankroll").value) || 10000),
-          unit: Math.max(1, parseFloat($("in-unit").value) || 100),
+          unit: (function(){ var v = parseFloat($("in-unit").value); return isNaN(v) ? 100 : Math.max(0, v); })(),
           speed: parseInt($("sel-speed").value, 10) || 350
         };
       }
@@ -1722,6 +1720,8 @@
           tr = tracks[i]; side = trackPick(tr, ctx, true);
           if (side) { amt = progUnits(st.prog, tr.st) * st.unit; bets.push({ tr: tr, side: side, amt: amt }); total += amt; }
         }
+        bets = bets.filter(function (b) { return b.amt > 0; });
+        total = bets.reduce(function (a, b) { return a + b.amt; }, 0);
         if (bets.length && total > S.bankroll) {
           var rem = S.bankroll;
           for (i = 0; i < bets.length; i++) { bets[i].amt = Math.min(bets[i].amt, rem); rem -= bets[i].amt; }
@@ -1795,8 +1795,17 @@
         var decks = soDecksLeft();
         var tcD7 = d7RC / decks, tcP8 = p8RC / decks;
         var sbBets = [];
-        if ((soBet === "d7" || soBet === "both") && tcD7 >= 4) sbBets.push({ id: "dragon7", key: "sbD7", amt: soBetAmt(tcD7, 4), tc: tcD7 });
-        if ((soBet === "p8" || soBet === "both") && tcP8 >= 11) sbBets.push({ id: "panda8", key: "sbP8", amt: soBetAmt(tcP8, 11), tc: tcP8 });
+        if (soBets.dragon7 && tcD7 >= 4) sbBets.push({ id: "dragon7", key: "sbD7", amt: soBetAmt(tcD7, 4), tc: tcD7 });
+        if (soBets.panda8 && tcP8 >= 11) sbBets.push({ id: "panda8", key: "sbP8", amt: soBetAmt(tcP8, 11), tc: tcP8 });
+        var u = soUnit();
+        if (soBets.tigerS) sbBets.push({ id: "tigerS", key: "sbTigerS", amt: u, tc: 0 });
+        if (soBets.tigerB) sbBets.push({ id: "tigerB", key: "sbTigerB", amt: u, tc: 0 });
+        if (soBets.dbP) sbBets.push({ id: "dbP", key: "sbDbP", amt: u, tc: 0 });
+        if (soBets.dbB) sbBets.push({ id: "dbB", key: "sbDbB", amt: u, tc: 0 });
+        if (soBets.tie7) sbBets.push({ id: "tie7", key: "sbTie7", amt: u, tc: 0 });
+        if (soBets.bpair) sbBets.push({ id: "bpair", key: "sbBPair", amt: u, tc: 0 });
+        if (soBets.ppair) sbBets.push({ id: "ppair", key: "sbPPair", amt: u, tc: 0 });
+        if (soBets.tie) sbBets.push({ id: "tie", key: "sbTie", amt: u, tc: 0 });
         var total = sbBets.reduce(function (a, b) { return a + b.amt; }, 0);
         if (total > S.bankroll) {
           var rem = S.bankroll;
@@ -2005,8 +2014,10 @@
         if (settings().method === "sideonly") {
           var decks = Math.max(0.1, (shoeArr.length - shoeIdx) / 52);
           var t7 = d7RC / decks, t8 = p8RC / decks, u = soUnit();
-          if ((soBet === "d7" || soBet === "both") && t7 >= 4) parts.push(t("sbD7") + " " + fmt$(u));
-          if ((soBet === "p8" || soBet === "both") && t8 >= 11) parts.push(t("sbP8") + " " + fmt$(u));
+          if (soBets.dragon7 && t7 >= 4) parts.push(t("sbD7") + " " + fmt$(u));
+          if (soBets.panda8 && t8 >= 11) parts.push(t("sbP8") + " " + fmt$(u));
+          var flatIds = [["tigerS","sbTigerS"],["tigerB","sbTigerB"],["dbP","sbDbP"],["dbB","sbDbB"],["tie7","sbTie7"],["bpair","sbBPair"],["ppair","sbPPair"],["tie","sbTie"]];
+          for (var fi = 0; fi < flatIds.length; fi++) if (soBets[flatIds[fi][0]]) parts.push(t(flatIds[fi][1]) + " " + fmt$(u));
         }
         if (settings().method === "manual") {
           for (var k = 0; k < SIDE_BETS.length; k++) {
@@ -2057,7 +2068,7 @@
         var dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 300, H = 150;
         cv.width = W * dpr; cv.height = H * dpr;
         var g = cv.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
-        var showD7 = soBet !== "p8", showP8 = soBet !== "d7";
+        var showD7 = soBets.dragon7, showP8 = soBets.panda8;
         var min = -12, max = 16, pad = 8;
         function X(k) { return pad + (W - pad * 2) * (soTC.length === 1 ? 0 : k / (soTC.length - 1)); }
         function Y(v) { return 6 + (H - 22) * (1 - (v - min) / (max - min)); }
@@ -2155,13 +2166,30 @@
         var grc = cntSel === "d7" ? d7RC : p8RC;
         $("guess-out").textContent = (v === grc ? t("guessRight") : t("guessWrong")) + grc + ".";
       });
-      Array.prototype.forEach.call($("so-seg").children, function (b) {
-        b.addEventListener("click", function () {
-          soBet = b.getAttribute("data-so");
-          Array.prototype.forEach.call($("so-seg").children, function (x) { x.classList.toggle("on", x === b); });
-          renderSoStats(); drawSoChart(); renderStats();
+      (function buildSoGrid() {
+        var g = $("so-grid"); if (!g) return;
+        var defs = [
+          ["dragon7", "sbD7", "TC \u2265 +4"], ["panda8", "sbP8", "TC \u2265 +11"],
+          ["tigerS", "sbTigerS", "flat"], ["tigerB", "sbTigerB", "flat"],
+          ["dbP", "sbDbP", "flat"], ["dbB", "sbDbB", "flat"],
+          ["tie7", "sbTie7", "flat"], ["bpair", "sbBPair", "flat"],
+          ["ppair", "sbPPair", "flat"], ["tie", "sbTie", "flat"]
+        ];
+        defs.forEach(function (d) {
+          var lab = document.createElement("label");
+          lab.style.cssText = "display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;padding:6px 8px;border:1px solid var(--line);border-radius:8px";
+          var cb = document.createElement("input");
+          cb.type = "checkbox"; cb.checked = !!soBets[d[0]];
+          cb.addEventListener("change", function () { soBets[d[0]] = cb.checked; renderSoStats(); drawSoChart(); renderStats(); });
+          var sp = document.createElement("span"); sp.setAttribute("data-i", d[1]);
+          var tag = document.createElement("span");
+          tag.style.cssText = "margin-left:auto;font-size:11px;color:var(--ink-soft);font-weight:400";
+          tag.textContent = d[2];
+          lab.appendChild(cb); lab.appendChild(sp); lab.appendChild(tag);
+          g.appendChild(lab);
         });
-      });
+        applyLang();
+      })();
       $("ck-soramp").addEventListener("change", function () { $("so-maxwrap").style.display = this.checked ? "block" : "none"; });
       window.addEventListener("resize", function () { drawBrChart(); drawSoChart(); });
 
