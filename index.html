@@ -267,7 +267,11 @@
       .footer-in { max-width: 1120px; margin: 0 auto; padding: 20px 16px 26px; font-size: 14px; }
       .footer-in a { color: var(--gold-bright); }
       .footer-in .fine { color: #a9bfa9; font-size: 12.5px; margin-top: 8px; }
-      .house-ad-banner {
+      .nl-band{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #d4af37;border-radius:14px;padding:28px 20px;text-align:center;margin:24px auto;max-width:640px;color:#f5f0e1}
+.nl-band h3{color:#d4af37;margin:0 0 8px}
+.nl-band p{opacity:.85;margin:0 0 16px;font-size:.95rem}
+.nl-band .nl-embed{max-width:480px;margin:0 auto}
+.house-ad-banner {
         margin: 36px auto 8px; max-width: 970px; border-radius: 12px;
         background: linear-gradient(135deg, #f5b942, #e8930c); color: #1a1206;
         padding: 22px 26px; text-align: center;
@@ -624,6 +628,13 @@
       </div>
     </main>
 
+    <!-- Newsletter signup -->
+    <div class="nl-band">
+      <h3 data-i="nlTitle"></h3>
+      <p data-i="nlDesc"></p>
+      <div class="nl-embed"><iframe src="https://iamthecasinocombethehouse.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:#fff;max-width:100%;border-radius:8px" frameborder="0" scrolling="no" title="Subscribe"></iframe></div>
+    </div>
+
     <!-- House ad: Our sites (bottom banner) -->
     <div class="house-ad-banner">
       <span class="house-ad-banner-label">Our sites</span>
@@ -632,7 +643,7 @@
 
     <footer class="site"
       <div class="footer-in">
-        <div><span data-i="footBy"></span> <b>Tim Lin</b> · <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a></div>
+        <div><span data-i="footBy"></span> <b>Hedgewiz</b> · <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a></div>
         <div class="fine"><a href="https://hedgewizs.github.io/thecasinocruiser/labs.html" target="_blank" rel="noopener" data-i="footLabs">More Labs</a></div>
         <div class="fine" data-i="footFine"></div>
         <div class="fine" data-i="footAffil"></div>
@@ -705,7 +716,9 @@
           merchT: "Baccarat Lab tees", merchB: "Baccarat Lab designs are coming to the merch shop — check back soon.",
           merchBtn: "Visit the merch shop",
           footAffil: "Affiliate disclosure: some links on this page are Amazon affiliate links. As an Amazon Associate I earn from qualifying purchases.",
-          footBy: "Baccarat Lab — by", footLabs: "More Labs — craps, roulette & blackjack", footFine: "Educational content about baccarat strategy and mathematics. Nothing here is financial or gambling advice, and no system overcomes the house edge. Play responsibly, within your means.",
+          footBy: "Baccarat Lab — by",
+          nlTitle: "📬 iamthecasino.com — the letter",
+          nlDesc: "Weekly: one options trade idea with the math, one casino truth, one comp-cruise deal. Free forever. Unsubscribe anytime.", footLabs: "More Labs — craps, roulette & blackjack", footFine: "Educational content about baccarat strategy and mathematics. Nothing here is financial or gambling advice, and no system overcomes the house edge. Play responsibly, within your means.",
           resB: "Banker wins", resP: "Player wins", resT: "Tie — bets push",
           nat: "natural", logBet: "Bet", logOn: "on", logWin: "won", logLose: "lost", logPush: "push",
           logShoe: "— New shoe #", logShoeEnd: "— Shoe finished (cut card) —",
@@ -778,7 +791,9 @@
           merchT: "Baccarat Lab T 恤", merchB: "Baccarat Lab 設計即將上架周邊商店——敬請期待。",
           merchBtn: "前往周邊商店",
           footAffil: "聯盟行銷揭露：本頁部分連結為 Amazon 聯盟連結。作為 Amazon Associate，我從符合條件的購買中賺取佣金。",
-          footBy: "Baccarat Lab — 作者", footLabs: "更多實驗室 — 花旗骰、輪盤、二十一點", footFine: "本站為百家樂策略與數學的教育內容，不構成任何財務或博弈建議，任何系統都無法克服莊家優勢。請理性娛樂、量力而為。",
+          footBy: "Baccarat Lab — 作者",
+          nlTitle: "📬 成為莊家——電子報",
+          nlDesc: "每週：一筆附數學的交易想法、一個賭場真相、一個郵輪優惠。永久免費，隨時退訂。", footLabs: "更多實驗室 — 花旗骰、輪盤、二十一點", footFine: "本站為百家樂策略與數學的教育內容，不構成任何財務或博弈建議，任何系統都無法克服莊家優勢。請理性娛樂、量力而為。",
           resB: "莊贏", resP: "閒贏", resT: "和局——注金退回",
           nat: "例牌", logBet: "下注", logOn: "押", logWin: "贏", logLose: "輸", logPush: "退注",
           logShoe: "—— 新牌靴 #", logShoeEnd: "—— 本靴結束（切牌卡）——",
@@ -1373,11 +1388,11 @@
       ];
 
       var ABOUT = {
-        en: `<p><b>Baccarat Lab</b> is a personal strategy resource built and maintained by <b>Tim Lin</b>, a baccarat enthusiast who plays mostly on cruise ships and in Las Vegas, and who got tired of strategy content that either sells miracles or skips the math.</p>
+        en: `<p><b>Baccarat Lab</b> is a personal strategy resource built and maintained by <b>Hedgewiz</b>, a baccarat enthusiast who plays mostly on cruise ships and in Las Vegas, and who got tired of strategy content that either sells miracles or skips the math.</p>
         <p>Everything here follows one house rule: <b>show the mechanics, show the numbers, and say plainly what doesn't work.</b> The strategy guides present the systems players actually use — bet selection, progressions, road-reading — as educational material. The side-bet section covers the one corner of baccarat where card counting has real (if modest) mathematical support. The simulator exists so you never have to take anyone's word for any of it: run the systems yourself, over hundreds of shoes, and watch the distributions.</p>
         <p>No credentials are claimed here beyond enthusiasm and homework. Baccarat's house edge — 1.06% on Banker, 1.24% on Player — does not care about either. Play for entertainment, size your bets to your means, and let the math on this site keep you honest.</p>
         <p>Tim also writes about casino-comp cruising at <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a>.</p>`,
-        zh: `<p><b>Baccarat Lab</b> 是由 <b>Tim Lin</b> 建立與維護的個人策略資源。Tim 是一位百家樂愛好者，主要在郵輪上和拉斯維加斯打牌；他受夠了那些不是販賣奇蹟、就是跳過數學的策略內容。</p>
+        zh: `<p><b>Baccarat Lab</b> 是由 <b>Hedgewiz</b> 建立與維護的個人策略資源。Hedgewiz 是一位百家樂愛好者，主要在郵輪上和拉斯維加斯打牌；他受夠了那些不是販賣奇蹟、就是跳過數學的策略內容。</p>
         <p>本站只有一條家規：<b>把機制講清楚、把數字攤開來、把行不通的部分明講。</b>策略指南以教育為目的，介紹玩家真正在用的系統——選注法、纜法、讀路。邊注章節談的是百家樂唯一一個算牌有真實（雖 modest）數學支持的角落。模擬器的存在，是讓你不必相信任何人的話：自己跑這些系統，跑上幾百靴，親眼看結果分布。</p>
         <p>本站不宣稱任何資歷，只有熱情和做過的功課。百家樂的莊家優勢——莊 1.06%、閒 1.24%——對兩者都一視同仁。請以娛樂為目的下注，注碼量力而為，讓本站的數學幫你保持誠實。</p>
         <p>Tim 也在 <a href="https://hedgewizs.github.io/thecasinocruiser/" target="_blank" rel="noopener">The Casino Cruiser</a> 寫賭場回饋郵輪旅遊的內容。</p>`
