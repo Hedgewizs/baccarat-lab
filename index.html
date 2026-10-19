@@ -292,6 +292,9 @@
       .manual-bets button { flex: 1; }
       .manual-bets button.on-b { background: var(--red); color: #fff; }
       .manual-bets button.on-p { background: var(--blue); color: #fff; }
+      .side-bet-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+      .side-bet-grid button { flex: 1 1 30%; font-size: 13px; padding: 7px 4px; }
+      .side-bet-grid button.on-sb { background: var(--gold); color: #1a1a1a; border-color: var(--gold); font-weight: 700; }
     </style>
   </head>
   <body>
@@ -383,6 +386,16 @@
                   <button type="button" class="btn ghost" id="mb-b"></button>
                   <button type="button" class="btn ghost" id="mb-p"></button>
                 </div>
+                <div id="sidebet-wrap" style="display:none">
+                  <div class="field">
+                    <label data-i="fSide"></label>
+                    <div class="side-bet-grid" id="side-bet-grid"></div>
+                  </div>
+                  <div class="field">
+                    <label for="in-sideunit" data-i="fSideUnit"></label>
+                    <input type="number" id="in-sideunit" value="25" min="1" step="1" />
+                  </div>
+                </div>
               </div>
               <div class="field">
                 <label for="sel-prog" data-i="fProg"></label>
@@ -435,13 +448,20 @@
             </div>
 
             <div class="panel">
-              <h3 data-i="d7T"></h3>
+              <h3 data-i="cntT"></h3>
               <div class="field">
                 <label data-i="fD7Mode"></label>
                 <div class="seg" id="d7-seg">
                   <button type="button" data-d7="off" class="on" data-i="d7Off"></button>
                   <button type="button" data-d7="learn" data-i="d7Learn"></button>
                   <button type="button" data-d7="practice" data-i="d7Practice"></button>
+                </div>
+              </div>
+              <div class="field" style="margin-top:8px">
+                <label data-i="fCntSel"></label>
+                <div class="seg" id="cnt-seg">
+                  <button type="button" data-cnt="d7" class="on" data-i="cntD7"></button>
+                  <button type="button" data-cnt="p8" data-i="cntP8"></button>
                 </div>
               </div>
               <div id="d7-body" style="display:none">
@@ -462,7 +482,7 @@
                   </div>
                   <div id="guess-out" style="margin-top:6px; font-size:14px"></div>
                 </div>
-                <p style="font-size:13px; color:var(--ink-soft); margin:10px 0 0" data-i="d7Help"></p>
+                <p style="font-size:13px; color:var(--ink-soft); margin:10px 0 0" id="cnt-help"></p>
               </div>
             </div>
           </div>
@@ -609,6 +629,18 @@
           sSlow: "Slow", sMed: "Medium", sFast: "Fast",
           deal: "Deal 1 hand", play: "▶ Play", pause: "⏸ Pause", newShoe: "New shoe", reset: "Reset session",
           manualB: "Bet Banker", manualP: "Bet Player",
+          fSide: "Side bets (manual mode)", fSideUnit: "Side bet unit ($)",
+          sbD7: "Dragon 7 · 40:1", sbP8: "Panda 8 · 25:1",
+          sbTigerS: "Small Tiger · 22:1", sbTigerB: "Big Tiger · 50:1",
+          sbDbP: "Dragon Bonus P · ≤30:1", sbDbB: "Dragon Bonus B · ≤30:1",
+          sbTie7: "7 Tie · 40:1/200:1", sbBPair: "Banker Pair · 11:1",
+          sbPPair: "Player Pair · 11:1", sbTie: "Tie · 8:1",
+          logSide: "Side",
+          cntT: "Side-Bet Count Practice", fCntSel: "Counter", cntD7: "Dragon 7", cntP8: "Panda 8",
+          p8Bet: "Count is hot — a published trigger (true count ≥ +11). Panda 8 spot.",
+          p8NoBet: "Below the +11 trigger. No Panda 8 bet.",
+          p8Help: "Panda 8 count: A,2 = +1; 3,4,5 = −2; 6,7 = −1; 8 = −2; 9 = +4; 10/J/Q/K = +1. Harder than Dragon 7 — six values to track. True count = running ÷ decks left. Trigger at +11.",
+          edgeLbl: "avg edge on triggered bets",
           batchT: "Batch mode", fBatch: "Shoes to simulate", runBatch: "Run batch", batchRunning: "Running…",
           d7T: "Dragon 7 Count Practice", fD7Mode: "Practice mode", d7Off: "Off", d7Learn: "Learn (count shown)", d7Practice: "Practice (count hidden)",
           d7RC: "Running count", d7TC: "True count", d7Decks: "Decks left",
@@ -665,6 +697,18 @@
           sSlow: "慢", sMed: "中", sFast: "快",
           deal: "發一局", play: "▶ 播放", pause: "⏸ 暫停", newShoe: "新牌靴", reset: "重置",
           manualB: "押莊", manualP: "押閒",
+          fSide: "邊注（手動模式）", fSideUnit: "邊注單位（$）",
+          sbD7: "龍七 · 40:1", sbP8: "熊貓八 · 25:1",
+          sbTigerS: "小虎 · 22:1", sbTigerB: "大虎 · 50:1",
+          sbDbP: "龍獎金閒 · 最高30:1", sbDbB: "龍獎金莊 · 最高30:1",
+          sbTie7: "7點和 · 40:1/200:1", sbBPair: "莊對 · 11:1",
+          sbPPair: "閒對 · 11:1", sbTie: "和局 · 8:1",
+          logSide: "邊注",
+          cntT: "邊注算牌練習", fCntSel: "計數器", cntD7: "龍七", cntP8: "熊貓八",
+          p8Bet: "計數已熱——達到公開發表的進場點（真數 ≥ +11），可以下熊貓八。",
+          p8NoBet: "未達 +11 進場點，不要下熊貓八。",
+          p8Help: "熊貓八計數法：A、2 = +1；3、4、5 = −2；6、7 = −1；8 = −2；9 = +4；10/J/Q/K = +1。比龍七難——六種數值要記。真數 = 流水計數 ÷ 剩餘副數。+11 進場。",
+          edgeLbl: "進場注平均優勢",
           batchT: "批量模式", fBatch: "模擬牌靴數", runBatch: "開始批量測試", batchRunning: "計算中…",
           d7T: "龍七算牌練習", fD7Mode: "練習模式", d7Off: "關閉", d7Learn: "學習（顯示計數）", d7Practice: "練習（隱藏計數）",
           d7RC: "流水計數", d7TC: "真數", d7Decks: "剩餘副數",
@@ -1171,6 +1215,59 @@
           <div class="verdict"><b class="tag">誠實評價：</b>閒方 2.65% 確實是全場定價最好的邊注之一——但仍是主遊戲莊注的兩倍多，所以是娛樂定價，不是投資。沒有實務可用的公開算牌系統；贏點數差的觸發不像龍七那樣集中在可算的牌型上。</div>`
         },
         {
+          id: "advplay", title: { en: "Advantage Play", zh: "優勢打法" },
+          en: `<div class="kicker">For counters</div><h3>Advantage Play: How Dragon 7 and Panda 8 Are Actually Beaten</h3>
+          <p>This is the playbook for the only corner of baccarat where card counting has published, peer-checked math behind it. I am going to be blunt about what it takes, because the gap between "this works" and "this pays my rent" is where most counters get hurt.</p>
+          <h4>1. The two counts</h4>
+          <table class="data"><tr><th></th><th class="num">Dragon 7</th><th class="num">Panda 8</th></tr>
+          <tr><td>Pays</td><td class="num">40:1</td><td class="num">25:1</td></tr>
+          <tr><td>Base house edge</td><td class="num">7.61%</td><td class="num">10.19%</td></tr>
+          <tr><td>Count (Jacobson)</td><td>8,9 = +2 &middot; 4-7 = -1 &middot; rest 0</td><td>A,2 = +1 &middot; 3,4,5 = -2 &middot; 6,7 = -1 &middot; 8 = -2 &middot; 9 = +4 &middot; 10-K = +1</td></tr>
+          <tr><td>Bet trigger (true count)</td><td class="num">&ge; +4</td><td class="num">&ge; +11</td></tr>
+          <tr><td>Bets per shoe</td><td class="num">&asymp; 5-7</td><td class="num">&asymp; 3.8</td></tr>
+          <tr><td>Avg edge on triggered bets</td><td class="num">&asymp; +8-10%</td><td class="num">&asymp; +6%</td></tr>
+          <tr><td>Profit per shoe ($100 bets)</td><td class="num">&asymp; $50-60</td><td class="num">&asymp; $22</td></tr></table>
+          <p>Practice both counts in the Simulator &mdash; the count panel now tracks Dragon 7 <i>and</i> Panda 8, with learn and hidden-count practice modes for each.</p>
+          <h4>2. When to bet (and how much)</h4>
+          <p>The standard play is brutally simple: <b>flat-bet one unit</b> whenever the true count hits the trigger, and sit out otherwise. No progression &mdash; progressions don't add edge, they add variance, and this bet already has enough of that at 40:1.</p>
+          <p>Some counters scale: 1 unit at the trigger, 2 units when the true count runs 2+ points past it. That juices hourly EV but also juices the swings &mdash; and big side-bet jumps are exactly what surveillance notices. My take: flat is fine. The edge is lumpy by nature; don't make it lumpier.</p>
+          <h4>3. Bankroll and risk of ruin</h4>
+          <p>This is the part people skip. A published analysis of the Dragon 7 attack (GGB Magazine, working from Jacobson's numbers) concluded that betting $100 a spot with an acceptable risk of ruin demands on the order of a <b>$100,000 bankroll</b> &mdash; and that simulations show roughly a <b>24% chance of still being down after 500 shoes</b> <i>with the edge working for you</i>.</p>
+          <p>Read that again. You can do everything right for months and still be underwater. If that sentence bothers you, the bet isn't for you &mdash; and that's fine. Most people's money is better spent enjoying the game at the main-bet prices.</p>
+          <h4>4. Game selection</h4>
+          <p>Not every EZ Baccarat table is attackable. You want: <b>deep penetration</b> (cut card 14-15 from the end is standard; deeper is gold), <b>heads-up or short-handed play</b> (every extra player eats your betting spots and slows the shoe to a crawl), and a brisk dealer (80 hands/hour is the dream; 60 is reality). A slow full table can cut your hourly EV in half before you place a chip.</p>
+          <h4>5. Cover and session craft</h4>
+          <p>Casinos have read Jacobson's paper too. A player who sits for six hours betting nothing but a $25 side bet at scattered moments is the most conspicuous person in the pit. Working counters blend in: they play the main game (small, steady Banker bets), tip normally, don't stare at the discard tray like it owes them money, and keep sessions to a couple of hours. Baccarat is a social game &mdash; act like you're there for the game, because the moment you look like you're there for the count, the count stops mattering.</p>
+          <h4>6. What the casino can do</h4>
+          <p>Counting cards is <b>not illegal</b> &mdash; it's just thinking. But the casino is private property: it can refuse your side bet, shuffle up early (killing the deep penetration you need), limit the side-bet maximum, or simply ask you to leave and not come back. All of these happen. The Dragon 7 is well-known to game protection teams precisely <i>because</i> the math was published.</p>
+          <div class="verdict"><b class="tag">The honest bottom line:</b> Dragon 7 is real, countable, and positive-EV at the trigger &mdash; and it is also one of the least profitable advantage plays a competent pro can make, at roughly $25/hour under <i>perfect</i> conditions that never exist. Treat it as a fascinating skill and a modest edge, not a living. Run the simulator, learn the count, understand the variance &mdash; and go in with your eyes open.</div>`,
+          zh: `<div class="kicker">給算牌者</div><h3>優勢打法：龍七與熊貓八到底怎麼打</h3>
+          <p>這是百家樂裡唯一有公開、經同行驗證數學背書的打法手冊。關於「做得到」和「能靠它付房租」之間的差距，我會直說，因為大多數算牌者就是傷在這裡。</p>
+          <h4>1. 兩套計數法</h4>
+          <table class="data"><tr><th></th><th class="num">龍七</th><th class="num">熊貓八</th></tr>
+          <tr><td>賠率</td><td class="num">40:1</td><td class="num">25:1</td></tr>
+          <tr><td>基礎莊家優勢</td><td class="num">7.61%</td><td class="num">10.19%</td></tr>
+          <tr><td>計數法（Jacobson）</td><td>8、9 = +2 &middot; 4-7 = -1 &middot; 其餘 0</td><td>A、2 = +1 &middot; 3、4、5 = -2 &middot; 6、7 = -1 &middot; 8 = -2 &middot; 9 = +4 &middot; 10-K = +1</td></tr>
+          <tr><td>進場真數</td><td class="num">&ge; +4</td><td class="num">&ge; +11</td></tr>
+          <tr><td>每靴下注次數</td><td class="num">約 5-7</td><td class="num">約 3.8</td></tr>
+          <tr><td>進場注平均優勢</td><td class="num">約 +8-10%</td><td class="num">約 +6%</td></tr>
+          <tr><td>每靴利潤（$100 注）</td><td class="num">約 $50-60</td><td class="num">約 $22</td></tr></table>
+          <p>兩套計數都可以在模擬器裡練——算牌面板現在同時追蹤龍七<i>和</i>熊貓八，各有學習與隱藏計數練習模式。</p>
+          <h4>2. 何時下注、下多少</h4>
+          <p>標準打法簡單到殘酷：真數一到進場點就<b>平注一單位</b>，不到就不下。不加纜——纜不增加優勢，只增加波動，而 40:1 的注本身波動已經夠大了。</p>
+          <p>有些算牌者會加碼：進場點下 1 單位，真數再高 2 點以上加到 2 單位。這能提高時薪期望，但波動也跟著放大——而且邊注金額大跳躍正是監視系統最注意的事。我的看法：平注就好。這個優勢天生就是一陣一陣的，別讓它更顛簸。</p>
+          <h4>3. 資金與破產風險</h4>
+          <p>這是大家最愛跳過的一節。針對龍七攻擊的公開分析（GGB Magazine，基於 Jacobson 的數據）結論是：每注 $100、要把破產風險壓到可接受，大概需要 <b>$100,000 的資金</b>——而且模擬顯示，即使優勢站在你這邊，打完 500 靴後仍有約 <b>24% 的機率是虧的</b>。</p>
+          <p>再讀一遍。幾個月全做對了，還可能在水面下。如果這句話讓你不舒服，這個注不適合你——沒關係，大多數人的錢花在主注的價格上，玩得更開心。</p>
+          <h4>4. 選桌</h4>
+          <p>不是每張 EZ 百家樂桌都能打。你要的是：<b>切牌夠深</b>（標準是尾端 14-15 張切，更深是黃金）、<b>單挑或人少</b>（每多一個玩家就吃掉你的下注機會，還把速度拖成烏龜）、<b>發牌俐落的荷官</b>（每小時 80 局是夢想，60 局是現實）。一張慢吞吞的滿桌，不用下注就能先砍掉你一半時薪。</p>
+          <h4>5. 掩護與實戰細節</h4>
+          <p>賭場也讀過 Jacobson 的論文。一個坐六小時、只在零星時刻下 $25 邊注的人，是全場最顯眼的人。有經驗的算牌者會融入：主注照玩（小而穩的莊注）、小費照給、不會死盯著棄牌盤像它欠你錢、每場控制在兩小時左右。百家樂是社交遊戲——表現得像來玩遊戲的，因為你一旦看起來像來算牌的，算牌就沒意義了。</p>
+          <h4>6. 賭場能做什麼</h4>
+          <p>算牌<b>不違法</b>——那只是動腦。但賭場是私人場所：它可以拒收你的邊注、提前洗牌（直接殺掉你要的深切牌）、調降邊注上限，或請你離開且別再來。這些都會發生。龍七正是<i>因為</i>數學被公開了，才上了各家賭場安管團隊的雷達。</p>
+          <div class="verdict"><b class="tag">誠實的結論：</b>龍七是真的、可算的，進場點也是正期望——同時它也是職業優勢玩家能選的最不賺錢的打法之一，在<i>完美</i>條件下時薪約 $25，而完美條件從不存在。把它當一門迷人的技術、一個適度的優勢，別當飯吃。去模擬器跑一跑、把計數練熟、理解波動——然後睜大眼睛進場。</div>`
+        },
+        {
           id: "maingame", title: { en: "Counting the Main Game", zh: "主遊戲算牌" },
           en: `<div class="kicker">Banker / Player</div><h3>Counting Banker vs Player — a dead end</h3>
           <p>New counters always ask: if card counting works in blackjack, why not count the main baccarat bets? The answer was settled decades ago by Peter Griffin's analysis: baccarat cards are simply too weak. Removing any single card shifts the Banker/Player odds by a tiny fraction of what it does in blackjack, because the drawing rules wash out most of the information.</p>
@@ -1297,7 +1394,7 @@
         buildNav(); renderGuide(); renderSide();
         $("about-body").innerHTML = ABOUT[LANG] || ABOUT.en;
         $("mb-b").textContent = t("manualB"); $("mb-p").textContent = t("manualP");
-        $("manual-bets").classList.toggle("show", settings().method === "manual");
+        $("manual-bets").classList.toggle("show", settings().method === "manual"); syncSideBetWrap();
         $("btn-deal").textContent = t("deal");
         $("btn-play").textContent = playing ? t("pause") : t("play");
         $("btn-newshoe").textContent = t("newShoe");
@@ -1451,6 +1548,53 @@
       var roads = null;
       var S = null, playing = false, timer = null;
       var d7Mode = "off", d7RC = 0, d7Revealed = false, lastHand = null;
+      var cntSel = "d7", p8RC = 0, manualSides = {};
+      var SIDE_BETS = [
+        { id: "dragon7", key: "sbD7" }, { id: "panda8", key: "sbP8" },
+        { id: "tigerS", key: "sbTigerS" }, { id: "tigerB", key: "sbTigerB" },
+        { id: "dbP", key: "sbDbP" }, { id: "dbB", key: "sbDbB" },
+        { id: "tie7", key: "sbTie7" }, { id: "bpair", key: "sbBPair" },
+        { id: "ppair", key: "sbPPair" }, { id: "tie", key: "sbTie" }
+      ];
+      function p8Value(r) {
+        if (r === 1 || r === 2) return 1;
+        if (r >= 3 && r <= 5) return -2;
+        if (r === 6 || r === 7) return -1;
+        if (r === 8) return -2;
+        if (r === 9) return 4;
+        return 1;
+      }
+      function sideBetResult(id, hand) {
+        var win = false, pay = 0, push = false, m, tb;
+        switch (id) {
+          case "dragon7": if (hand.dragon) { win = true; pay = 40; } break;
+          case "panda8": if (hand.panda) { win = true; pay = 25; } break;
+          case "tigerS": if (hand.res === "B" && hand.bc.length === 2 && hand.bv === 6) { win = true; pay = 22; } break;
+          case "tigerB": if (hand.res === "B" && hand.bc.length === 3 && hand.bv === 6) { win = true; pay = 50; } break;
+          case "dbP":
+            if (hand.res === "P") {
+              if (hand.natural) { win = true; pay = 1; }
+              else { m = hand.pv - hand.bv; tb = { 9: 30, 8: 10, 7: 6, 6: 4, 5: 2, 4: 1 }; if (tb[m]) { win = true; pay = tb[m]; } }
+            } else if (hand.res === "T" && hand.natural) { push = true; }
+            break;
+          case "dbB":
+            if (hand.res === "B") {
+              if (hand.natural) { win = true; pay = 1; }
+              else { m = hand.bv - hand.pv; tb = { 9: 30, 8: 10, 7: 6, 6: 4, 5: 2, 4: 1 }; if (tb[m]) { win = true; pay = tb[m]; } }
+            } else if (hand.res === "T" && hand.natural) { push = true; }
+            break;
+          case "tie7":
+            if (hand.res === "T" && hand.pv === 7 && hand.pc.length === hand.bc.length) {
+              win = true; pay = hand.pc.length === 2 ? 40 : 200;
+            }
+            break;
+          case "bpair": if (hand.bPair) { win = true; pay = 11; } break;
+          case "ppair": if (hand.pPair) { win = true; pay = 11; } break;
+          case "tie": if (hand.res === "T") { win = true; pay = 8; } break;
+        }
+        return { win: win, pay: pay, push: push };
+      }
+      function sideUnit() { return Math.max(1, parseFloat($("in-sideunit").value) || 25); }
 
       function settings() {
         return {
@@ -1496,7 +1640,7 @@
         cutAt = shoeArr.length - 52 - Math.floor(Math.random() * 21);
         shoeOver = false; shoeNo++;
         ctx = freshCtx(); tracks = makeTracks(settings().method);
-        d7RC = 0; d7Revealed = false;
+        d7RC = 0; p8RC = 0; d7Revealed = false;
         resetRoads();
       }
       function resetSession() {
@@ -1538,6 +1682,8 @@
         var hand = dealt.hand; lastHand = hand;
         for (i = 0; i < hand.pc.length; i++) d7RC += d7Value(hand.pc[i].r);
         for (i = 0; i < hand.bc.length; i++) d7RC += d7Value(hand.bc[i].r);
+        for (i = 0; i < hand.pc.length; i++) p8RC += p8Value(hand.pc[i].r);
+        for (i = 0; i < hand.bc.length; i++) p8RC += p8Value(hand.bc[i].r);
         d7Revealed = false;
         var delta = 0, parts = [];
         for (i = 0; i < bets.length; i++) {
@@ -1549,6 +1695,24 @@
           if (b.amt > S.largest) S.largest = b.amt;
           progUpdate(st.prog, b.tr.st, outcome);
           parts.push(t("logBet") + " " + fmt$(b.amt) + " " + t("logOn") + " " + sideName(b.side) + " → " + (outcome === "W" ? t("logWin") + " " + fmt$(pl) : outcome === "L" ? t("logLose") + " " + fmt$(-b.amt) : t("logPush")));
+        }
+        if (st.method === "manual") {
+          var sbBets = [], k, sbid;
+          for (k = 0; k < SIDE_BETS.length; k++) {
+            sbid = SIDE_BETS[k].id;
+            if (manualSides[sbid]) sbBets.push({ id: sbid, key: SIDE_BETS[k].key, amt: sideUnit() });
+          }
+          var rem = S.bankroll - total;
+          for (k = 0; k < sbBets.length; k++) { sbBets[k].amt = Math.min(sbBets[k].amt, Math.max(0, rem)); rem -= sbBets[k].amt; }
+          sbBets = sbBets.filter(function (b) { return b.amt > 0; });
+          for (k = 0; k < sbBets.length; k++) {
+            var sb = sbBets[k], sr = sideBetResult(sb.id, hand);
+            var spl = sr.push ? 0 : (sr.win ? sb.amt * sr.pay : -sb.amt);
+            delta += spl;
+            if (sb.amt > S.largest) S.largest = sb.amt;
+            parts.push(t("logSide") + " " + t(sb.key) + " " + fmt$(sb.amt) + " \u2192 " +
+              (sr.push ? t("logPush") : sr.win ? t("logWin") + " " + fmt$(spl) : t("logLose") + " " + fmt$(sb.amt)));
+          }
         }
         S.bankroll += delta;
         S.hands++;
@@ -1724,6 +1888,11 @@
           var sig = vpPick(ctx);
           parts.push(t("vpSignal") + ": " + (sig ? t("vpOn") : t("vpOff")));
         }
+        if (settings().method === "manual") {
+          for (var k = 0; k < SIDE_BETS.length; k++) {
+            if (manualSides[SIDE_BETS[k].id]) parts.push(t(SIDE_BETS[k].key) + " " + fmt$(sideUnit()));
+          }
+        }
         return parts.length ? parts.join(" · ") : "—";
       }
       function renderStats() {
@@ -1745,18 +1914,23 @@
         var on = d7Mode !== "off";
         $("d7-body").style.display = on ? "block" : "none";
         Array.prototype.forEach.call($("d7-seg").children, function (b) { b.classList.toggle("on", b.getAttribute("data-d7") === d7Mode); });
+        Array.prototype.forEach.call($("cnt-seg").children, function (b) { b.classList.toggle("on", b.getAttribute("data-cnt") === cntSel); });
         $("d7-practice").style.display = d7Mode === "practice" ? "block" : "none";
         if (!on) return;
         var decksLeft = Math.max(0.1, (shoeArr.length - shoeIdx) / 52);
-        var tc = d7RC / decksLeft;
+        var rc = cntSel === "d7" ? d7RC : p8RC;
+        var tc = rc / decksLeft;
+        var trig = cntSel === "d7" ? 4 : 11;
         var hide = d7Mode === "practice" && !d7Revealed;
-        $("d7-rc").innerHTML = hide ? '<span class="hidden-count">•••</span>' : String(d7RC);
+        $("d7-rc").innerHTML = hide ? '<span class="hidden-count">•••</span>' : String(rc);
         $("d7-tc").innerHTML = hide ? '<span class="hidden-count">•••</span>' : tc.toFixed(1);
         $("d7-decks").textContent = decksLeft.toFixed(1);
         var sig = $("d7-signal");
         if (hide) sig.innerHTML = "";
-        else if (tc >= 4) sig.innerHTML = '<span class="signal-on">' + t("d7Bet") + "</span>";
-        else sig.textContent = t("d7NoBet");
+        else if (tc >= trig) sig.innerHTML = '<span class="signal-on">' + (cntSel === "d7" ? t("d7Bet") : t("p8Bet")) +
+          ' <span style="opacity:.75">(' + t("edgeLbl") + ": " + (cntSel === "d7" ? "≈+8\u201310%" : "≈+6%") + ")</span></span>";
+        else sig.textContent = cntSel === "d7" ? t("d7NoBet") : t("p8NoBet");
+        $("cnt-help").textContent = cntSel === "d7" ? t("d7Help") : t("p8Help");
       }
       function renderAll() { renderHand(); renderStats(); renderRoads(); renderD7(); drawBrChart(); }
 
@@ -1775,10 +1949,24 @@
       $("btn-batch").addEventListener("click", runBatch);
       $("sel-method").addEventListener("change", function () {
         tracks = makeTracks(settings().method);
-        $("manual-bets").classList.toggle("show", settings().method === "manual");
+        $("manual-bets").classList.toggle("show", settings().method === "manual"); syncSideBetWrap();
         renderStats();
       });
       $("sel-prog").addEventListener("change", function () { tracks = makeTracks(settings().method); renderStats(); });
+      function buildSideBetGrid() {
+        var g = $("side-bet-grid"); g.innerHTML = "";
+        SIDE_BETS.forEach(function (sb) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "btn ghost"; b.textContent = t(sb.key);
+          b.addEventListener("click", function () {
+            manualSides[sb.id] = !manualSides[sb.id];
+            b.classList.toggle("on-sb", !!manualSides[sb.id]);
+            renderStats();
+          });
+          g.appendChild(b);
+        });
+      }
+      function syncSideBetWrap() { $("sidebet-wrap").style.display = settings().method === "manual" ? "block" : "none"; }
       function syncManualBtns() { $("mb-b").className = "btn " + (manualSide === "B" ? "on-b" : "ghost"); $("mb-p").className = "btn " + (manualSide === "P" ? "on-p" : "ghost"); }
       $("mb-b").addEventListener("click", function () { manualSide = "B"; syncManualBtns(); renderStats(); });
       $("mb-p").addEventListener("click", function () { manualSide = "P"; syncManualBtns(); renderStats(); });
@@ -1786,14 +1974,19 @@
         b.addEventListener("click", function () { d7Mode = b.getAttribute("data-d7"); $("guess-out").textContent = ""; renderD7(); });
       });
       $("btn-reveal").addEventListener("click", function () { d7Revealed = true; renderD7(); });
+      Array.prototype.forEach.call($("cnt-seg").children, function (b) {
+        b.addEventListener("click", function () { cntSel = b.getAttribute("data-cnt"); $("guess-out").textContent = ""; renderD7(); });
+      });
       $("btn-guess").addEventListener("click", function () {
         var v = parseInt($("in-guess").value, 10);
         if (isNaN(v)) { $("guess-out").textContent = t("guessEmpty"); return; }
-        $("guess-out").textContent = (v === d7RC ? t("guessRight") : t("guessWrong")) + d7RC + ".";
+        var grc = cntSel === "d7" ? d7RC : p8RC;
+        $("guess-out").textContent = (v === grc ? t("guessRight") : t("guessWrong")) + grc + ".";
       });
       window.addEventListener("resize", function () { drawBrChart(); });
 
       /* ---------- init ---------- */
+      buildSideBetGrid();
       syncManualBtns();
       resetSession();
       applyLang();
