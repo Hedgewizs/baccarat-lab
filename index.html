@@ -299,7 +299,18 @@
       .side-bet-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       .side-bet-grid button { flex: 1 1 30%; font-size: 13px; padding: 7px 4px; }
       .side-bet-grid button.on-sb { background: var(--gold); color: #1a1a1a; border-color: var(--gold); font-weight: 700; }
-    </style>
+    
+      .book-card{display:flex;gap:22px;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:22px;margin-bottom:18px}
+      .book-cover{width:130px;flex-shrink:0;border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+      .book-info{flex:1;min-width:0}
+      .book-info h3{margin:0 0 4px;font-size:1.15rem;color:#d4af37}
+      .book-author{color:#999;font-size:.88rem;margin:0 0 10px;font-style:italic}
+      .book-info p{margin:0 0 12px;line-height:1.6}
+      .book-info a{font-weight:700;color:#d4af37}
+      .gear-icon{font-size:3rem;flex-shrink:0;width:130px;text-align:center;padding-top:8px}
+      .subsection-title{color:#d4af37;margin:20px 0 14px;font-size:1.25rem}
+      @media(max-width:640px){.book-card{flex-direction:column;gap:14px}.book-cover{width:110px}.gear-icon{width:auto}}
+</style>
   </head>
   <body>
     <header class="site">
@@ -590,29 +601,74 @@
       <section class="page" id="page-gear">
         <h2 class="section-title" data-i="gearTitle"></h2>
         <p class="section-lede" data-i="gearLede"></p>
-        <div class="cards">
-          <div class="card">
-            <h3 data-i="gear1T"></h3>
-            <p data-i="gear1B"></p>
-            <a class="btn" href="https://www.amazon.com/s?k=theory+of+gambling+and+statistical+logic+epstein&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
-          </div>
-          <div class="card">
-            <h3 data-i="gear2T"></h3>
-            <p data-i="gear2B"></p>
-            <a class="btn" href="https://www.amazon.com/s?k=professional+plastic+playing+cards+poker&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
-          </div>
-          <div class="card">
-            <h3 data-i="gear3T"></h3>
-            <p data-i="gear3B"></p>
-            <a class="btn" href="https://www.amazon.com/s?k=automatic+card+shuffler+6+deck&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
-          </div>
-          <div class="card">
-            <h3 data-i="gear4T"></h3>
-            <p data-i="gear4B"></p>
-            <a class="btn" href="https://www.amazon.com/s?k=baccarat+table+felt+layout&tag=hedgewiz00-20" target="_blank" rel="noopener nofollow sponsored" data-i="gearBtn"></a>
-          </div>
-        </div>
+        <h3 class="subsection-title" data-i="gearBooksH"></h3>
+        <div id="gear-books"></div>
+        <h3 class="subsection-title" style="margin-top:24px" data-i="gearItemsH"></h3>
+        <div id="gear-items"></div>
         <p class="affil-note" data-i="gearAffil"></p>
+
+      <script>
+      (function(){
+        var OL = "https://covers.openlibrary.org/b/";
+        var TAG = "hedgewiz00-20";
+        function amz(q){ return "https://www.amazon.com/s?k=" + encodeURIComponent(q) + "&tag=" + TAG; }
+        var BOOKS = [
+          {cover: OL + "isbn/9780123749406-L.jpg", q: "Theory of Gambling and Statistical Logic Epstein",
+           icon: "📖",
+           name: {en: "The Theory of Gambling and Statistical Logic", zh: "《賭博理論與統計邏輯》"},
+           author: {en: "Richard A. Epstein", zh: "Richard A. Epstein"},
+           d: {en: "The textbook. Epstein builds probability theory entirely around casino games \u2014 dice, cards, roulette \u2014 from first principles to advanced analysis. Dense and demanding, but it\u2019s the foundation everything on this site stands on. For readers who want the real math, not the simplified version.",
+               zh: "教科書級鉅著。Epstein 完全圍繞賭場遊戲\u2014\u2014骰子、紙牌、輪盤\u2014\u2014從第一原理講到高階分析，建構整套機率論。艱深但紮實，是本站所有內容的真正地基。想學真數學而非簡化版的讀者必讀。"}},
+          {cover: OL + "isbn/9780809045990-L.jpg", q: "Fortune's Formula William Poundstone",
+           icon: "📖",
+           name: {en: "Fortune\u2019s Formula", zh: "《Fortune\u2019s Formula》"},
+           author: {en: "William Poundstone", zh: "William Poundstone"},
+           d: {en: "The story of the Kelly criterion \u2014 how a Bell Labs scientist\u2019s formula for beating the house became the math behind smart bet sizing, from blackjack to Wall Street. Reads like a thriller, teaches like a textbook. Essential for understanding why bankroll management matters more than picking winners.",
+               zh: "凱利公式的故事\u2014\u2014一位貝爾實驗室科學家擊敗賭場的公式，如何成為從二十一點到華爾街的聰明注碼數學。讀起來像驚悚小說，教得像教科書。想理解為什麼資金管理比選贏家更重要，這本必讀。"}}
+        ];
+        var ITEMS = [
+          {icon: "🃏", q: "professional plastic playing cards poker",
+           name: {en: "Professional playing cards", zh: "專業撲克牌"},
+           d: {en: "Plastic, casino-grade cards that handle like the real thing \u2014 for home practice dealing and count drills.",
+               zh: "塑膠、賭場級別的牌\u2014\u2014在家練習發牌和算牌的最佳選擇。"}},
+          {icon: "🎰", q: "automatic card shuffler 6 deck",
+           name: {en: "Automatic card shufflers", zh: "自動洗牌機"},
+           d: {en: "Multi-deck shufflers for running your own practice shoes at home.",
+               zh: "多副牌洗牌機\u2014\u2014在家跑自己的練習牌靴。"}},
+          {icon: "🟩", q: "baccarat table felt layout",
+           name: {en: "Baccarat table layouts", zh: "百家樂桌布"},
+           d: {en: "Felt layouts with the proper betting spots \u2014 learn the table geography before you sit down.",
+               zh: "印有正確下注區的桌布\u2014\u2014上桌前先搞懂牌桌地理。"}}
+        ];
+        function pick(o){ var L = (typeof LANG !== "undefined" ? LANG : "en"); return (L === "zh" ? o.zh : o.en) || o.en; }
+        function renderGearCovers(){
+          var bg = document.getElementById("gear-books");
+          var ig = document.getElementById("gear-items");
+          if(!bg || !ig) return;
+          var btn = (typeof t === "function") ? t("gearBtn") : "See it on Amazon";
+          var html = "";
+          for(var i = 0; i < BOOKS.length; i++){
+            var b = BOOKS[i];
+            html += "<div class=\"book-card\"><img src=\"" + b.cover + "\" alt=\"" + pick(b.name) + "\" class=\"book-cover\" loading=\"lazy\"><div class=\"book-info\"><h3>" + b.icon + " " + pick(b.name) + "</h3><p class=\"book-author\">" + pick(b.author) + "</p><p>" + pick(b.d) + "</p><a href=\"" + amz(b.q) + "\" target=\"_blank\" rel=\"nofollow sponsored noopener\">" + btn + " \u2192</a></div></div>";
+          }
+          bg.innerHTML = html;
+          var html2 = "";
+          for(var j = 0; j < ITEMS.length; j++){
+            var g = ITEMS[j];
+            html2 += "<div class=\"book-card\"><div class=\"gear-icon\">" + g.icon + "</div><div class=\"book-info\"><h3>" + pick(g.name) + "</h3><p>" + pick(g.d) + "</p><a href=\"" + amz(g.q) + "\" target=\"_blank\" rel=\"nofollow sponsored noopener\">" + btn + " \u2192</a></div></div>";
+          }
+          ig.innerHTML = html2;
+        }
+        if (typeof window !== "undefined") {
+          window.__renderGearCovers = renderGearCovers;
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderGearCovers);
+          } else {
+            renderGearCovers();
+          }
+        }
+      })();
+      </script>
         <h2 class="section-title" style="margin-top:28px" data-i="merchTitle"></h2>
         <p class="section-lede" data-i="merchLede"></p>
         <div class="cards">
@@ -703,6 +759,7 @@
           roadsT: "Scoreboards", roadBead: "Bead Plate 珠盤路", roadBig: "Big Road 大路", roadEye: "Big Eye Boy 大眼仔路", roadSmall: "Small Road 小路", roadCock: "Cockroach Pig 蟑螂路",
           logT: "Hand Log",
           aboutTitle: "About Baccarat Lab",
+          gearBooksH: "The bookshelf", gearItemsH: "Table gear",
           gearTitle: "Player's Kit",
           gearLede: "The physical tools of the game: what to read, what to deal with, and what to practice on. No systems for sale here — just the gear.",
           gear1T: "Essential reading", gear1B: "Start with Epstein's <i>The Theory of Gambling and Statistical Logic</i> (the math bible) and Poundstone's <i>Fortune's Formula</i> (Kelly, bankroll, and why systems fail).",
@@ -778,6 +835,7 @@
           roadsT: "路單", roadBead: "珠盤路 Bead Plate", roadBig: "大路 Big Road", roadEye: "大眼仔路 Big Eye Boy", roadSmall: "小路 Small Road", roadCock: "蟑螂路 Cockroach Pig",
           logT: "對局紀錄",
           aboutTitle: "關於 Baccarat Lab",
+          gearBooksH: "書架", gearItemsH: "實戰裝備",
           gearTitle: "玩家裝備",
           gearLede: "遊戲的實體工具：讀什麼、用什麼牌、在什麼上練習。這裡不賣必勝系統——只有裝備。",
           gear1T: "必讀書籍", gear1B: "從 Epstein 的 <i>The Theory of Gambling and Statistical Logic</i>（數學聖經）和 Poundstone 的 <i>Fortune's Formula</i>（凱利公式、資金管理，以及投注系統為何失效）開始。",
@@ -1451,6 +1509,7 @@
           var k = el.getAttribute("data-i"); if (I18N[LANG][k] || I18N.en[k]) el.innerHTML = t(k);
         });
         buildNav(); renderGuide(); renderSide();
+        if (typeof window.__renderGearCovers === "function") window.__renderGearCovers();
         $("about-body").innerHTML = ABOUT[LANG] || ABOUT.en;
         $("mb-b").textContent = t("manualB"); $("mb-p").textContent = t("manualP");
         $("manual-bets").classList.toggle("show", settings().method === "manual"); syncSideBetWrap();
