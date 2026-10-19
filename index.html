@@ -1397,6 +1397,7 @@
 
       function showPage(id) {
         curPage = id;
+        try { history.replaceState(null, "", "#" + id); } catch (e) {}
         PAGES.forEach(function (p) { $("page-" + p.id).classList.toggle("on", p.id === id); });
         var nav = $("mainnav");
         Array.prototype.forEach.call(nav.children, function (b) { b.classList.toggle("on", b.getAttribute("data-page") === id); });
@@ -1427,8 +1428,8 @@
         if (!active) active = tabs[0];
         $(panelId).innerHTML = active[LANG] || active.en;
       }
-      function renderGuide() { buildTabs(GUIDE_TABS, "guide-tabs", "guide-panel", curGuideTab, function (id) { curGuideTab = id; renderGuide(); }); }
-      function renderSide() { buildTabs(SIDE_TABS, "side-tabs", "side-panel", curSideTab, function (id) { curSideTab = id; renderSide(); }); }
+      function renderGuide() { buildTabs(GUIDE_TABS, "guide-tabs", "guide-panel", curGuideTab, function (id) { curGuideTab = id; try { history.replaceState(null, "", "#guide-" + id); } catch (e) {} renderGuide(); }); }
+      function renderSide() { buildTabs(SIDE_TABS, "side-tabs", "side-panel", curSideTab, function (id) { curSideTab = id; try { history.replaceState(null, "", "#side-" + id); } catch (e) {} renderSide(); }); }
 
       function applyLang() {
         document.documentElement.lang = LANG === "zh" ? "zh-Hant" : "en";
@@ -2169,7 +2170,27 @@
       syncManualBtns(); syncSoPanel();
       resetSession();
       applyLang();
-      showPage("home");
+      (function () {
+        var h = (location.hash || "").replace("#", "");
+        var pageIds = PAGES.map(function (p) { return p.id; });
+        if (h.indexOf("guide-") === 0) {
+          var tid = h.slice(6);
+          if (GUIDE_TABS.some(function (t) { return t.id === tid; })) curGuideTab = tid;
+          showPage("guide");
+        } else if (h.indexOf("side-") === 0) {
+          var tid2 = h.slice(5);
+          if (SIDE_TABS.some(function (t) { return t.id === tid2; })) curSideTab = tid2;
+          showPage("sidebets");
+        } else if (h === "sim-sideonly") {
+          showPage("sim");
+          var sel = document.getElementById("sel-method");
+          if (sel) { sel.value = "sideonly"; var ev = document.createEvent("HTMLEvents"); ev.initEvent("change", true, false); sel.dispatchEvent(ev); }
+        } else if (pageIds.indexOf(h) >= 0) {
+          showPage(h);
+        } else {
+          showPage("home");
+        }
+      })();
     </script>
   </body>
 </html>
