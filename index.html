@@ -111,6 +111,13 @@
         padding: 7px 14px; border-radius: 999px; font-size: 14px; cursor: pointer;
       }
       nav.main button.on { background: var(--gold-bright); color: #231a00; border-color: var(--gold-bright); font-weight: 700; }
+      .navtoggle { display: none; background: rgba(255,255,255,.08); color: #eef3e4; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 7px 12px; font-size: 16px; line-height: 1; cursor: pointer; min-width: 44px; min-height: 40px; }
+      @media (max-width: 720px) {
+        .navtoggle { display: block; }
+        nav.main { display: none; }
+        nav.main.open { display: flex; flex-direction: column; align-items: stretch; }
+        nav.main.open button { width: 100%; text-align: left; padding: 11px 14px; }
+      }
 
       main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 40px; }
       .page { display: none; }
@@ -309,6 +316,9 @@
       .side-bet-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       .side-bet-grid button { flex: 1 1 30%; font-size: 13px; padding: 7px 4px; }
       .side-bet-grid button.on-sb { background: var(--gold); color: #1a1a1a; border-color: var(--gold); font-weight: 700; }
+      @media (max-width: 560px) {
+        .side-bet-grid button { flex: 1 1 46%; font-size: 14px; padding: 10px 6px; }
+      }
     
       .book-card{display:flex;gap:22px;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:22px;margin-bottom:18px}
       .book-cover{width:130px;flex-shrink:0;border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,.4)}
@@ -333,6 +343,7 @@
           <button id="lang-en" class="on" type="button">EN</button>
           <button id="lang-zh" type="button">中</button>
         </div>
+        <button class="navtoggle" id="navtoggle" type="button" aria-label="Menu" aria-expanded="false" onclick="toggleNav()">☰</button>
       </div>
       <nav class="main" id="mainnav"></nav>
     </header>
@@ -1475,8 +1486,14 @@
       ];
       var curPage = "home", curGuideTab = "threebead", curSideTab = "dragon7";
 
+      function toggleNav() {
+        var nav = $("mainnav"); var open = nav.classList.toggle("open");
+        var b = $("navtoggle"); b.textContent = open ? "✕" : "☰"; b.setAttribute("aria-expanded", open ? "true" : "false");
+      }
       function showPage(id) {
         curPage = id;
+        $("mainnav").classList.remove("open");
+        var nt = $("navtoggle"); if (nt) { nt.textContent = "☰"; nt.setAttribute("aria-expanded", "false"); }
         try { history.replaceState(null, "", "#" + id); } catch (e) {}
         PAGES.forEach(function (p) { $("page-" + p.id).classList.toggle("on", p.id === id); });
         var nav = $("mainnav");
